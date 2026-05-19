@@ -18,4 +18,20 @@ export default defineConfig({
       },
     },
   },
-})
+  build: {
+    chunkSizeWarningLimit: 800, // Raises the warning ceiling from 500kB to 800kB
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          // Drops heavy libraries like framer-motion into their own optimized bundle chunks
+          if (id.includes('node_modules')) {
+            if (id.includes('framer-motion')) {
+              return 'vendor-framer';
+            }
+            return 'vendor-core';
+          }
+        },
+      },
+    },
+  },
+});
