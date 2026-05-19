@@ -1,0 +1,36 @@
+@import "tailwindcss";
+
+/* Senior Dev Touch: Custom Scrollbar and Base Styling */
+:root {
+  color-scheme: dark;
+}
+
+body {
+  @apply bg-[#050505] text-white antialiased;
+  margin: 0;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* Custom Emerald Selection Glow */
+::selection {
+  @apply bg-emerald-500/30 text-emerald-200;
+}
+
+/* Kinetic Scanline Keyframes (For Option B) */
+@keyframes scan {
+  from { transform: translateY(-100%); }
+  to { transform: translateY(100vh); }
+}
+
+.animate-scan {
+  animation: scan 8s linear infinite;
+}
+
+@media (min-width: 768px) {
+  html, body, a, button {
+    cursor: none !important;
+  }
+}
+html {
+  scroll-behavior: smooth;
+}
