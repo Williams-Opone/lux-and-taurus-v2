@@ -16,8 +16,8 @@ export const ProjectVault = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    fetch('/api/projects')
-      .then((res) => res.json())
+    fetch('/api/index/projects')
+  .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data)) setProjects(data);
         setIsLoading(false);

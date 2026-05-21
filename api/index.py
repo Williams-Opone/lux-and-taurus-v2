@@ -44,8 +44,31 @@ db.init_app(app)
 
 # Create tables if they don't exist
 with app.app_context():
-    db.create_all()
-
+    db.create_all()  # Verifies or builds the structural tables in Neon
+    
+    if Project.query.count() == 0:
+        print("// System_Seed: Initializing vault configuration nodes...")
+        sample_projects = [
+            Project(
+                title="Our Story Our Voice", 
+                description="Storytelling and donation platform dedicated to celebrating Canadian ethno-cultural communities.", 
+                tech_stack="Next.js, Flask, PostgreSQL", 
+                live_link="https://ourstoryourvoice.org", 
+                image_url="https://placehold.co/600x400/000000/10b981?text=Our+Story+Our+Voice"
+            ),
+            Project(
+                title="Adaka Global", 
+                description="Industrial inventory management and global corporate asset tracking infrastructure.", 
+                tech_stack="React, TypeScript, Tailwind", 
+                live_link="#", 
+                image_url="https://placehold.co/600x400/000000/10b981?text=Adaka+Global"
+            )
+        ]
+        db.session.bulk_save_objects(sample_projects)
+        db.session.commit()
+        print("// System_Seed: Portfolio entities loaded successfully into Neon.")
+    else:
+        print("// System_Monitor: Project records located. Skipping database seed.")
 
 @app.route("/api/contact", methods=["POST"])
 def contact():

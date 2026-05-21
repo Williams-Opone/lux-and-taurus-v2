@@ -54,24 +54,26 @@ export const AdminDashboard = () => {
   // FETCH CORE ENGINE DATA
   useEffect(() => {
     if (isAuthenticated) {
-      // 1. Fetch Leads
-      fetch('/api/admin/leads', { headers: { 'Authorization': `Bearer ${import.meta.env.VITE_ADMIN_KEY}` } })
+      // 1. Fetch Leads via Vercel index routing
+      fetch('/api/index/admin/leads', { headers: { 'Authorization': `Bearer ${import.meta.env.VITE_ADMIN_KEY}` } })
         .then(res => res.json())
         .then(data => { if (Array.isArray(data)) setLeads(data); })
-        .catch(err => console.error("Leads_Sync_Error:", err));
+        .catch(err => console.error("Leads_Sync_Failure:", err));
 
-      // 2. Fetch Projects
-      fetch('/api/projects')
+      // 2. Fetch Projects via Vercel index routing
+      fetch('/api/index/projects')
         .then(res => res.json())
         .then(data => { if (Array.isArray(data)) setProjects(data); })
-        .catch(err => console.error("Projects_Sync_Error:", err));
+        .catch(err => console.error("Vault_Sync_Failure:", err));
     }
   }, [isAuthenticated]);
 
   // HANDLE CREATE OR UPDATE REQUESTS
   const handleProjectSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const url = editingProjectId ? `/api/admin/projects/${editingProjectId}` : '/api/admin/projects';
+    const url = editingProjectId 
+      ? `/api/index/admin/projects/${editingProjectId}` 
+      : `/api/index/admin/projects`;
     const method = editingProjectId ? 'PUT' : 'POST';
 
     try {
@@ -90,8 +92,8 @@ export const AdminDashboard = () => {
         setProjectForm({ title: '', image_url: '', tech_stack: '', live_link: '', description: '' });
         setEditingProjectId(null);
         
-        // Refresh local view data
-        const res = await fetch('/api/projects');
+        // ✨ FIXED: Realigned endpoint to route through index securely on hot reload
+        const res = await fetch('/api/index/projects');
         const data = await res.json();
         if (Array.isArray(data)) setProjects(data);
       }
@@ -117,7 +119,7 @@ export const AdminDashboard = () => {
     if (!confirm("CRITICAL_WARNING: Are you absolutely sure you want to permanently purge this asset from your database nodes? This cannot be undone.")) return;
 
     try {
-      const response = await fetch(`/api/admin/projects/${id}`, {
+      const response = await fetch(`/api/index/admin/projects/${id}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${import.meta.env.VITE_ADMIN_KEY}` }
       });
