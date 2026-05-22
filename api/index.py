@@ -20,7 +20,7 @@ database_url = os.getenv('SQLALCHEMY_DATABASE_URI') or os.getenv('DATABASE_URL')
 
 if not database_url:
     # ⚠️ REPLACE THE STRING BELOW WITH YOUR ACTUAL NEON CONNECTION STRING FROM YOUR NEON DASHBOARD
-    database_url = "postgresql://neondb_owner:npg_mIX9T6YHNqpB@ep-still-dream-alk0cnqs-pooler.c-3.eu-central-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
+    database_url = "postgresql+psycopg2://neondb_owner:npg_mIX9T6YHNqpB@ep-still-dream-alk0cnqs-pooler.c-3.eu-central-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
     print("\n⚠️ NOTICE: Using hardcoded database string backup.")
 else:
     print(f"\n✅ CONNECTION_STREAM_SECURE: Environment mapping verified.")
