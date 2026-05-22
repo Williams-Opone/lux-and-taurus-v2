@@ -55,7 +55,9 @@ export const AdminDashboard = () => {
   useEffect(() => {
     if (isAuthenticated) {
       // 1. Fetch Leads via Vercel index routing
-      fetch('/api/admin/leads', { headers: { 'Authorization': `Bearer ${import.meta.env.VITE_ADMIN_KEY}` } })
+      fetch('/api/admin/leads', { 
+        headers: { 'Authorization': `Bearer ${import.meta.env.VITE_ADMIN_KEY}` } 
+      })
   .then(res => res.json())
   .then(data => { if (Array.isArray(data)) setLeads(data); })
   .catch(err => console.error(err));
