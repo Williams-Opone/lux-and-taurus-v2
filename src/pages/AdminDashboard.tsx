@@ -55,13 +55,13 @@ export const AdminDashboard = () => {
   useEffect(() => {
     if (isAuthenticated) {
       // 1. Fetch Leads via Vercel index routing
-      fetch('/api/index/admin/leads', { headers: { 'Authorization': `Bearer ${import.meta.env.VITE_ADMIN_KEY}` } })
-        .then(res => res.json())
-        .then(data => { if (Array.isArray(data)) setLeads(data); })
-        .catch(err => console.error("Leads_Sync_Failure:", err));
+      fetch('/api/admin/leads', { headers: { 'Authorization': `Bearer ${import.meta.env.VITE_ADMIN_KEY}` } })
+  .then(res => res.json())
+  .then(data => { if (Array.isArray(data)) setLeads(data); })
+  .catch(err => console.error(err));
 
       // 2. Fetch Projects via Vercel index routing
-      fetch('/api/index/projects')
+      fetch('/api/projects')
         .then(res => res.json())
         .then(data => { if (Array.isArray(data)) setProjects(data); })
         .catch(err => console.error("Vault_Sync_Failure:", err));
@@ -72,8 +72,8 @@ export const AdminDashboard = () => {
   const handleProjectSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const url = editingProjectId 
-      ? `/api/index/admin/projects/${editingProjectId}` 
-      : `/api/index/admin/projects`;
+  ? `/api/admin/projects/${editingProjectId}` 
+  : `/api/admin/projects`;
     const method = editingProjectId ? 'PUT' : 'POST';
 
     try {
@@ -93,7 +93,7 @@ export const AdminDashboard = () => {
         setEditingProjectId(null);
         
         // ✨ FIXED: Realigned endpoint to route through index securely on hot reload
-        const res = await fetch('/api/index/projects');
+        const res = await fetch('/api/projects');
         const data = await res.json();
         if (Array.isArray(data)) setProjects(data);
       }
@@ -119,7 +119,7 @@ export const AdminDashboard = () => {
     if (!confirm("CRITICAL_WARNING: Are you absolutely sure you want to permanently purge this asset from your database nodes? This cannot be undone.")) return;
 
     try {
-      const response = await fetch(`/api/index/admin/projects/${id}`, {
+      const response = await fetch(`/api/admin/projects/${id}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${import.meta.env.VITE_ADMIN_KEY}` }
       });

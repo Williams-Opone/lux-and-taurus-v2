@@ -25,7 +25,7 @@ export const MissionIntake = () => {
     setStatus('transmitting'); // UI feedback starts
     
     try {
-      const response = await fetch('/api/index/contact', {
+      const response = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
