@@ -69,7 +69,7 @@ export const MissionIntake = () => {
                 name="name"
                 type="text" 
                 className="bg-[#0a0a0a] border border-zinc-800 p-4 font-mono text-xs text-white focus:border-emerald-500 outline-none transition-all"
-                placeholder="WILLIAMS_OPONE" 
+                placeholder="JOHN_DOE" 
                 value={formData.name} 
                 onChange={handleChange}
               />
@@ -85,7 +85,7 @@ export const MissionIntake = () => {
                 name="email"
                 type="email" 
                 className="bg-[#0a0a0a] border border-zinc-800 p-4 font-mono text-xs text-white focus:border-emerald-500 outline-none transition-all"
-                placeholder="DEV@LUXANDTAURUS.COM" 
+                placeholder="JOHNDOE@GMAIL.COM" 
                 value={formData.email} 
                 onChange={handleChange}
               />
@@ -144,9 +144,9 @@ export const MissionIntake = () => {
               className="w-full md:w-auto"
               variant={status === 'success' ? 'outline' : 'primary'}
             >
-              {status === 'idle' && "Transmit_Data"}
+              {status === 'idle' && "Submit_Form"}
               {status === 'transmitting' && "Encrypting..."}
-              {status === 'success' && "Mission_Logged_Successfully"}
+              {status === 'success' && "Form_Sent_Successfully"}
             </Button>
           </div>
         </form>

@@ -145,13 +145,13 @@ export const Navbar = () => {
         <div className="hidden md:flex items-center gap-12 pointer-events-auto px-8 py-3 bg-black/40 backdrop-blur-xl border border-white/5 rounded-full">
           {/* Linked the click mechanism directly to the central scrollTo engine */}
           <button onClick={() => scrollTo('top')} className="font-mono text-[10px] uppercase tracking-widest text-zinc-500 hover:text-emerald-500 transition-colors">Home</button>
-          <button onClick={() => scrollTo('vault')} className="font-mono text-[10px] uppercase tracking-widest text-zinc-500 hover:text-emerald-500 transition-colors">The_Vault</button>
-          <button onClick={() => scrollTo('process')} className="font-mono text-[10px] uppercase tracking-widest text-zinc-500 hover:text-emerald-500 transition-colors">The_Method</button>
+          <button onClick={() => scrollTo('vault')} className="font-mono text-[10px] uppercase tracking-widest text-zinc-500 hover:text-emerald-500 transition-colors">Our_Projects</button>
+          <button onClick={() => scrollTo('process')} className="font-mono text-[10px] uppercase tracking-widest text-zinc-500 hover:text-emerald-500 transition-colors">Our_Procedure</button>
           <button 
             onClick={() => scrollTo('contact')}
             className="font-mono text-[10px] uppercase tracking-widest text-emerald-500 hover:text-white transition-colors"
           >
-            _Connect
+            Contact_Us
           </button>
         </div>
 
@@ -196,10 +196,10 @@ export const Navbar = () => {
             <div className="flex flex-col items-center gap-8">
               {/* Linked the mobile overlay buttons too so they share the scroll structure logic */}
               <button onClick={() => scrollTo('top')} className="text-2xl font-black italic text-white uppercase tracking-tighter hover:text-emerald-500 transition-colors">_Home</button>
-              <button onClick={() => scrollTo('vault')} className="text-2xl font-black italic text-white uppercase tracking-tighter hover:text-emerald-500 transition-colors">_The_Vault</button>
-              <button onClick={() => scrollTo('process')} className="text-2xl font-black italic text-white uppercase tracking-tighter hover:text-emerald-500 transition-colors">_The_Method</button>
+              <button onClick={() => scrollTo('vault')} className="text-2xl font-black italic text-white uppercase tracking-tighter hover:text-emerald-500 transition-colors">_Our_Projects</button>
+              <button onClick={() => scrollTo('process')} className="text-2xl font-black italic text-white uppercase tracking-tighter hover:text-emerald-500 transition-colors">_Our_Procedure</button>
               <button onClick={() => scrollTo('about')} className="text-2xl font-black italic text-white uppercase tracking-tighter hover:text-emerald-500 transition-colors">_Operative</button>
-              <button onClick={() => scrollTo('contact')} className="text-3xl font-black italic text-emerald-500 uppercase tracking-tighter">_Connect</button>
+              <button onClick={() => scrollTo('contact')} className="text-3xl font-black italic text-emerald-500 uppercase tracking-tighter">_Contact_Us</button>
             </div>
 
             <div className="flex gap-8 mt-10">
