@@ -71,7 +71,10 @@ export const Hero = () => {
             <Button onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}>
               Initiate_Mission
             </Button>
-            <button className="group flex items-center gap-4 px-6 py-4 font-mono text-[10px] uppercase tracking-[0.4em] text-zinc-500 hover:text-emerald-400 transition-all underline decoration-zinc-800 underline-offset-8">
+            <button 
+              onClick={() => document.getElementById('vault')?.scrollIntoView({ behavior: 'smooth' })}
+              className="group flex items-center gap-4 px-6 py-4 font-mono text-[10px] uppercase tracking-[0.4em] text-zinc-500 hover:text-emerald-400 transition-all underline decoration-zinc-800 underline-offset-8"
+            >
               The_Vault
               <span className="w-2 h-2 rounded-full bg-zinc-800 group-hover:bg-emerald-500 animate-pulse" />
             </button>

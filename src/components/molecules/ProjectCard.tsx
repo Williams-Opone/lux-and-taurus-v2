@@ -27,7 +27,8 @@ export const ProjectCard = ({ id, title, description, techStack, link, imageUrl 
       viewport={{ once: true }}
       transition={{ duration: 0.5 }}
       onMouseMove={handleMouseMove}
-      className="group relative h-[540px] flex flex-col bg-[#070707] border border-zinc-900 overflow-hidden transition-colors duration-500 hover:bg-[#090909]"
+      // Added mb-6 for layout padding space separation gaps on mobile tracking targets
+      className="group relative h-[540px] w-full flex flex-col bg-[#070707] border border-zinc-900 overflow-hidden transition-colors duration-500 hover:bg-[#090909] mb-6 md:mb-0"
     >
       {/* Dynamic Glow Spotlight Matrix Overlay */}
       <motion.div
@@ -56,14 +57,12 @@ export const ProjectCard = ({ id, title, description, techStack, link, imageUrl 
 
       {/* Image Node Wrapper (Optimized Aspect Display Frame) */}
       <div className="h-[65%] bg-[#030303] relative overflow-hidden shrink-0 border-b border-zinc-900/80 p-4 flex items-center justify-center">
-        {/* Subtle interior diagnostic grid back drop background layer to float screenshots beautifully */}
         <div className="absolute inset-0 bg-[radial-gradient(#1f1f1f_1px,transparent_1px)] [background-size:16px_16px] opacity-30" />
         
         {imageUrl ? (
           <img 
             src={imageUrl} 
             alt={title} 
-            // Switched out object-cover for object-contain to display full screenshot dimensions safely
             className="w-full h-full object-contain opacity-40 group-hover:opacity-90 transition-all duration-700 group-hover:scale-[1.02] drop-shadow-[0_12px_24px_rgba(0,0,0,0.8)]"
           />
         ) : (
