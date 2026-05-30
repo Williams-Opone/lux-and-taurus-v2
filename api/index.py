@@ -1,5 +1,8 @@
 import os
 import sys
+import requests
+from bs4 import BeautifulSoup
+from flask import jsonify
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from dotenv import load_dotenv
@@ -55,6 +58,32 @@ db.init_app(app)
 # Create tables if they do not exist inside Neon
 with app.app_context():
     db.create_all()
+
+
+@app.route('/api/scrape-leads', methods=['GET'])
+def scrape_leads():
+    # Example: Targeting a generic business directory URL
+    url = "https://example-directory.com/local-businesses"
+    headers = {"User-Agent": "Mozilla/5.0"}
+    
+    response = requests.get(url, headers=headers)
+    soup = BeautifulSoup(response.text, 'html.parser')
+
+    leads = []
+    # You will need to inspect the target website to find the correct HTML classes
+    for listing in soup.find_all('div', class_='business-listing-card'):
+        name_element = listing.find('h3')
+        website_element = listing.find('a', class_='website-link')
+        
+        if name_element and website_element:
+            leads.append({
+                "company_name": name_element.text.strip(),
+                "website": website_element['href']
+            })
+
+    # Returns the list of leads so Activepieces can read it
+    return jsonify({"leads": leads}), 200
+
 
 @app.route("/api/contact", methods=["POST"])
 def contact():
