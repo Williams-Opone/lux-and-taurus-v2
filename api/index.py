@@ -62,26 +62,16 @@ with app.app_context():
 
 @app.route('/api/scrape-leads', methods=['GET'])
 def scrape_leads():
-    # Example: Targeting a generic business directory URL
-    url = "https://example-directory.com/local-businesses"
-    headers = {"User-Agent": "Mozilla/5.0"}
+    # We are completely skipping the web scraper for a moment.
+    # Instead, we are just handing Activepieces exactly what it wants to see.
     
-    response = requests.get(url, headers=headers)
-    soup = BeautifulSoup(response.text, 'html.parser')
+    leads = [
+        {
+            "company_name": "Test Agency LLC",
+            "website": "apple.com"
+        }
+    ]
 
-    leads = []
-    # You will need to inspect the target website to find the correct HTML classes
-    for listing in soup.find_all('div', class_='business-listing-card'):
-        name_element = listing.find('h3')
-        website_element = listing.find('a', class_='website-link')
-        
-        if name_element and website_element:
-            leads.append({
-                "company_name": name_element.text.strip(),
-                "website": website_element['href']
-            })
-
-    # Returns the list of leads so Activepieces can read it
     return jsonify({"leads": leads}), 200
 
 
