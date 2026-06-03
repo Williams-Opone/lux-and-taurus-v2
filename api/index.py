@@ -144,53 +144,70 @@ def scrape_directory():
     leads = []
 
     try:
+        print("\n--- STARTING SCRAPE ---")
         response = requests.get(target_url, headers=HEADERS, timeout=15)
-        soup = BeautifulSoup(response.text, 'html.parser')
         
-        # STEP 1: Find the job cards using your exact inspected container class
-        # We look for "new-listing-container" to capture all matching containers safely
-        for listing in soup.find_all('div', class_='new-listing-container'):
-            name_element = listing.find('h2', class_='new-listing__header__title__text')
-            job_link_element = listing.find('a', class_='listing-link--unlocked')
+        if response.status_code != 200:
+            print("ERROR: WeWorkRemotely blocked us!")
+            return jsonify({"error": "Blocked by website security", "leads": []}), 403
 
-            if name_element and job_link_element and job_link_element.has_attr('href'):
+        soup = BeautifulSoup(response.text, 'html.parser')
+        job_cards = soup.find_all(['li', 'div'], class_=['feature', 'new-listing-container'])
+        print(f"Found {len(job_cards)} potential job cards on the page.")
+
+        # THE BLACKLIST: Ignore all generic social/app links
+        ignored_domains = [
+            "weworkremotely.com", "twitter.com", "linkedin.com", 
+            "instagram.com", "facebook.com", "youtube.com", 
+            "tiktok.com", "apple.com", "google.com"
+        ]
+
+        for listing in job_cards:
+            name_element = listing.find(['span', 'h2'], class_=['company', 'new-listing__header__title__text'])
+            
+            job_links = listing.find_all('a', href=True)
+            job_link_element = job_links[1] if len(job_links) > 1 else None
+
+            if name_element and job_link_element:
                 company_name = name_element.text.strip()
                 job_url_path = str(job_link_element['href'])
                 
-                # Check if it's an internal WeWorkRemotely path
                 if job_url_path.startswith('/'):
-                    # Build the full absolute URL so Python can make the request
                     full_job_url = f"https://weworkremotely.com{job_url_path}"
+                    print(f"Hunting: {company_name} -> {full_job_url}")
                     
-                    # STEP 2: Navigate inside the specific job post to find the real corporate site
                     try:
                         job_response = requests.get(full_job_url, headers=HEADERS, timeout=10)
                         job_soup = BeautifulSoup(job_response.text, 'html.parser')
                         
                         real_website_url = None
                         
-                        # Loop through all links on the single post page
                         for link in job_soup.find_all('a', href=True):
                             current_link = str(link['href'])
                             
-                            # Grab the first external link that isn't a job board or social profile
-                            if current_link.startswith('http') and "weworkremotely.com" not in current_link:
-                                if "twitter.com" not in current_link and "linkedin.com" not in current_link:
+                            # Grab the first external link that is NOT in our blacklist
+                            if current_link.startswith('http'):
+                                if not any(domain in current_link for domain in ignored_domains):
                                     real_website_url = current_link
-                                    break # Core company URL found, exit internal loop
+                                    break 
 
                         if real_website_url:
+                            print(f"SUCCESS! Found website: {real_website_url}")
                             leads.append({
                                 "company_name": company_name,
                                 "website": real_website_url
                             })
+                        else:
+                            print(f"Failed: No external website found for {company_name}")
                             
                     except Exception as inner_e:
-                        print(f"Failed to scrape internal page for {company_name}: {inner_e}")
+                        print(f"Failed to load internal page: {inner_e}")
                         continue 
 
+        print(f"--- FINISHED SCRAPE: Total Leads Found: {len(leads)} ---")
         return jsonify({"leads": leads}), 200
     except Exception as e:
+        print(f"CRITICAL ERROR: {str(e)}")
         return jsonify({"error": str(e), "leads": []}), 500
 
 
