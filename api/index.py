@@ -2,7 +2,6 @@ import os
 import sys
 import requests
 from bs4 import BeautifulSoup
-from flask import jsonify
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from dotenv import load_dotenv
@@ -59,20 +58,140 @@ db.init_app(app)
 with app.app_context():
     db.create_all()
 
+HEADERS = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+    "Accept-Language": "en-US,en;q=0.5",
+    "Connection": "keep-alive",
+}
 
-@app.route('/api/scrape-leads', methods=['GET'])
-def scrape_leads():
-    # We are completely skipping the web scraper for a moment.
-    # Instead, we are just handing Activepieces exactly what it wants to see.
-    
-    leads = [
-        {
-            "company_name": "Test Agency LLC",
-            "website": "apple.com"
-        }
+# ---------------------------------------------------------
+# ROUTE 1: CLUTCH.CO (Marketing Agencies)
+# ---------------------------------------------------------
+@app.route('/api/scrape-clutch', methods=['GET'])
+def scrape_clutch():
+    target_urls = [
+        "https://clutch.co/agencies/digital-marketing?page=1",
+        "https://clutch.co/agencies/digital-marketing?page=2"
     ]
+    leads = []
 
-    return jsonify({"leads": leads}), 200
+    try:
+        for url in target_urls:
+            response = requests.get(url, headers=HEADERS, timeout=15)
+            if response.status_code != 200:
+                continue
+            
+            soup = BeautifulSoup(response.text, 'html.parser')
+            
+            for listing in soup.find_all('li', class_='provider-row'):
+                name_element = listing.find('h3', class_='company_info')
+                website_element = listing.find('a', class_='website-link__item')
+
+                if name_element and website_element and website_element.has_attr('href'):
+                    # Force Python to treat the href as a string to satisfy Pylance
+                    website_url = str(website_element['href'])
+                        
+                    if website_url.startswith('http') and "clutch.co" not in website_url:
+                        leads.append({
+                            "company_name": name_element.text.strip(),
+                            "website": website_url
+                        })
+
+        return jsonify({"leads": leads}), 200
+    except Exception as e:
+        return jsonify({"error": str(e), "leads": []}), 500
+
+
+# ---------------------------------------------------------
+# ROUTE 2: Y COMBINATOR (Tech Startups)
+# ---------------------------------------------------------
+@app.route('/api/scrape-ycombinator', methods=['GET'])
+def scrape_ycombinator():
+    target_url = "https://www.ycombinator.com/companies?batch=W24"
+    leads = []
+
+    try:
+        response = requests.get(target_url, headers=HEADERS, timeout=15)
+        soup = BeautifulSoup(response.text, 'html.parser')
+        
+        for listing in soup.find_all('a', class_='_company_'):
+            name_element = listing.find('span', class_='_coName_')
+            
+            website_element = None
+            for link in listing.find_all('a', href=True):
+                if "http" in link.get_text():
+                    website_element = link
+                    break
+
+            if name_element and website_element and website_element.has_attr('href'):
+                leads.append({
+                    "company_name": name_element.text.strip(),
+                    "website": str(website_element['href'])
+                })
+
+        return jsonify({"leads": leads}), 200
+    except Exception as e:
+        return jsonify({"error": str(e), "leads": []}), 500
+
+
+# ---------------------------------------------------------
+# ROUTE 3: WE WORK REMOTELY (High-Intent Tech Buyers)
+# ---------------------------------------------------------
+@app.route('/api/scrape-directory', methods=['GET'])
+def scrape_directory():
+    target_url = "https://weworkremotely.com/categories/remote-full-stack-programming-jobs"
+    leads = []
+
+    try:
+        response = requests.get(target_url, headers=HEADERS, timeout=15)
+        soup = BeautifulSoup(response.text, 'html.parser')
+        
+        # STEP 1: Find the job cards using your exact inspected container class
+        # We look for "new-listing-container" to capture all matching containers safely
+        for listing in soup.find_all('div', class_='new-listing-container'):
+            name_element = listing.find('h2', class_='new-listing__header__title__text')
+            job_link_element = listing.find('a', class_='listing-link--unlocked')
+
+            if name_element and job_link_element and job_link_element.has_attr('href'):
+                company_name = name_element.text.strip()
+                job_url_path = str(job_link_element['href'])
+                
+                # Check if it's an internal WeWorkRemotely path
+                if job_url_path.startswith('/'):
+                    # Build the full absolute URL so Python can make the request
+                    full_job_url = f"https://weworkremotely.com{job_url_path}"
+                    
+                    # STEP 2: Navigate inside the specific job post to find the real corporate site
+                    try:
+                        job_response = requests.get(full_job_url, headers=HEADERS, timeout=10)
+                        job_soup = BeautifulSoup(job_response.text, 'html.parser')
+                        
+                        real_website_url = None
+                        
+                        # Loop through all links on the single post page
+                        for link in job_soup.find_all('a', href=True):
+                            current_link = str(link['href'])
+                            
+                            # Grab the first external link that isn't a job board or social profile
+                            if current_link.startswith('http') and "weworkremotely.com" not in current_link:
+                                if "twitter.com" not in current_link and "linkedin.com" not in current_link:
+                                    real_website_url = current_link
+                                    break # Core company URL found, exit internal loop
+
+                        if real_website_url:
+                            leads.append({
+                                "company_name": company_name,
+                                "website": real_website_url
+                            })
+                            
+                    except Exception as inner_e:
+                        print(f"Failed to scrape internal page for {company_name}: {inner_e}")
+                        continue 
+
+        return jsonify({"leads": leads}), 200
+    except Exception as e:
+        return jsonify({"error": str(e), "leads": []}), 500
 
 
 @app.route("/api/contact", methods=["POST"])
@@ -144,7 +263,6 @@ def contact():
 def get_leads():
     auth_header = request.headers.get('Authorization')
 
-    # 🛡️ REMOVED EXPOSITORY PLAIN-TEXT SECURITY TELEMETRY PRINTS
     if auth_header != f"Bearer {app.config.get('ADMIN_SECRET_KEY')}":
         return jsonify({"error": "Unauthorized"}), 401
     
