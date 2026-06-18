@@ -1,22 +1,51 @@
 @import "tailwindcss";
 
-/* Senior Dev Touch: Custom Scrollbar and Base Styling */
+/* --- ✦ LUX & TAURUS BRAND SYSTEM VARIABLES --- */
 :root {
   color-scheme: dark;
+  --bg-main: #0A0A0F;
+  --bg-surface: #111115;
+  --color-primary: #00C4A0;
+  --color-accent: #D4AF37;
+  --text-primary: #F4F4F6;
+  --text-secondary: #9CA3AF;
+  --border-gold: rgba(212, 175, 55, 0.1);
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  @apply bg-[#050505] text-white antialiased;
+  background-color: var(--bg-main);
+  color: var(--text-primary);
   margin: 0;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Custom Emerald Selection Glow */
+/* Premium Heading Hierarchy (Satoshi Weight Settings) */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Satoshi', 'Inter', sans-serif;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+}
+
+/* Custom Premium Emerald Selection Glow (Fixed color expression) */
 ::selection {
-  @apply bg-emerald-500/30 text-emerald-200;
+  background-color: rgba(0, 196, 160, 0.2);
+  color: white;
 }
 
-/* Kinetic Scanline Keyframes (For Option B) */
+/* Desktop Custom Cursor Override Bridge */
+@media (min-width: 768px) {
+  html, body, a, button {
+    cursor: none !important;
+  }
+}
+
+/* Kinetic Scanline Keyframes */
 @keyframes scan {
   from { transform: translateY(-100%); }
   to { transform: translateY(100vh); }
@@ -26,11 +55,58 @@ body {
   animation: scan 8s linear infinite;
 }
 
-@media (min-width: 768px) {
-  html, body, a, button {
-    cursor: none !important;
+/* ✨ FIXED: Cleaned and updated Tailwind v4 utility class compilation structure */
+@utility btn-cyber-glitch {
+  &:hover {
+    text-shadow: 2px 0 var(--color-primary), -2px 0 var(--color-accent);
+    animation: glitch-anim 0.3s cubic-bezier(.25, .46, .45, .94) both infinite;
   }
 }
-html {
-  scroll-behavior: smooth;
+
+@keyframes glitch-anim {
+  0% { transform: translate(0) }
+  20% { transform: translate(-2px, 2px) }
+  40% { transform: translate(-2px, -2px) }
+  60% { transform: translate(2px, 2px) }
+  80% { transform: translate(2px, -2px) }
+  100% { transform: translate(0) }
+}
+
+/* ==========================================================================
+   💎 PREMIUM TECH AGENCY SLIM SCROLLBAR CONFIGURATION
+   ========================================================================== */
+
+/* Webkit Engine (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-main);
+  border-left: 1px solid rgba(212, 175, 55, 0.05);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #064d32, var(--color-primary));
+  border-radius: 100px;
+  border: 1px solid rgba(10, 10, 15, 0.4);
+  transition: all 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(to bottom, var(--color-primary), #34d399);
+  box-shadow: 0 0 12px rgba(0, 196, 160, 0.4);
+}
+
+::-webkit-scrollbar-corner {
+  background: var(--bg-main);
+}
+
+/* Firefox Fallback */
+@supports (scrollbar-color: auto) {
+  html {
+    scrollbar-width: thin;
+    scrollbar-color: #064d32 var(--bg-main);
+  }
 }

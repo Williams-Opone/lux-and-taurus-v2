@@ -2,27 +2,35 @@
 export default {
   content: [
     "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}", // This covers all subfolders in src
+    "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
     extend: {
       fontFamily: {
-        mono: ['JetBrains Mono', 'Fira Code', 'monospace'],
+        // Luxury Modern Sans-Serif Typographic System
+        sans: ['Plus Jakarta Sans', 'Inter', 'sans-serif'],
+        mono: ['JetBrains Mono', 'monospace'],
       },
-      // Preserving custom black for that deep "Vantablack" agency feel
       colors: {
-        black: "#050505",
-      },
-      // 1. ADD THE LASER SCANNER VECTOR TRACKS
-      keyframes: {
-        scan: {
-          '0%': { transform: 'translateY(-100%)' },
-          '100%': { transform: 'translateY(540px)' }, // Matches the exact card layout height
+        black: "#060606", 
+        charcoal: "#0F0F11", 
+        // Elegant Muted Emerald
+        emerald: {
+          400: "#00E5A3",
+          500: "#00C48C", 
+          600: "#009E70",
+        },
+        // ✨ THE MISSING LUXURY GOLD PIPELINE
+        gold: {
+          400: "#F1D271",
+          500: "#D4AF37", // Warm Metallic Gold
+          600: "#AA8826",
+        },
+        // Premium Off-White and Slate Contours
+        ghost: {
+          white: "#F5F5F5",
+          gray: "#9A9A9A",
         }
-      },
-      // 2. TRANSLATE TO ANIMATION UTILITY
-      animation: {
-        scan: 'scan 2.5s linear infinite',
       },
     },
   },

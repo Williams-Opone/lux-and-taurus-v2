@@ -55,8 +55,8 @@ from api.model import db, Lead, Project
 db.init_app(app)
 
 # Create tables if they do not exist inside Neon
-with app.app_context():
-    db.create_all()
+# with app.app_context():
+#     db.create_all()
 
 
 
@@ -377,16 +377,20 @@ def delete_lead(lead_id):
 def get_projects():
     try:
         projects = Project.query.order_by(Project.created_at.desc()).all()
-        return jsonify([{
+        response = jsonify([{
             "id": p.id,
             "title": p.title,
             "description": p.description,
             "tech_stack": p.tech_stack,
             "live_link": p.live_link,
             "image_url": p.image_url
-        } for p in projects]), 200
+        } for p in projects])
+        
+        # ⚡ Cache control: Browser keeps data for 10 mins, Vercel CDN caches for 1 hour
+        response.headers['Cache-Control'] = 'public, max-age=600, s-maxage=3600'
+        return response, 200
     except Exception as e:
-        return jsonify({"status": "error", "message": "Failed to stream portfolio assets."}), 500
+        return jsonify({"status": "error", "message": "Failed to stream assets."}), 500
 
 @app.route("/api/admin/projects", methods=["POST"])
 def add_project():
