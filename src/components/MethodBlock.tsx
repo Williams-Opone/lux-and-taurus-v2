@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { ScaleFrame } from './ScaleFrame';
 
 const GREEN = '#4ade80'; // ← site palette; change here to switch the whole section
 
@@ -50,7 +51,7 @@ export const MethodBlock = () => {
         whileInView={{ scaleY: 1 }}
         viewport={{ once: true }}
         transition={{ duration: 1.2, ease: customEase }}
-        className="absolute left-1/2 -translate-x-1/2 top-0 h-[88px] w-[3.5px] hidden lg:block z-0 origin-top"
+        className="absolute left-1/2 -translate-x-1/2 top-0 h-[88px] w-[3.5px] z-0 origin-top"
         style={{ background: GREEN, boxShadow: `0 0 12px ${GREEN}50` }}
       />
 
@@ -69,8 +70,9 @@ export const MethodBlock = () => {
           </motion.h2>
         </div>
 
-        {/* --- ALTERNATING PIPELINE MATRIX GRID (Desktop View) --- */}
-        <div className="hidden lg:flex flex-col relative w-full max-w-3xl mx-auto space-y-16 pt-8 pb-32">
+        {/* --- ALTERNATING PIPELINE MATRIX GRID (same structure on all devices) --- */}
+        <ScaleFrame designWidth={768} className="w-full">
+        <div className="flex flex-col relative w-full space-y-16 pt-8 pb-32">
 
           {/* ========================================== */}
           {/* STEP 01: LISTEN (Right Side)               */}
@@ -165,34 +167,7 @@ export const MethodBlock = () => {
 
         </div>
 
-        {/* --- ✦ RESPONSIVE MOBILE FLOW REVERT LAYER --- */}
-        <div className="flex flex-col space-y-12 w-full max-w-md mx-auto text-left lg:hidden pl-4 sm:pl-8 mt-12 pb-24 relative">
-          <motion.div
-            initial={{ scaleY: 0 }}
-            whileInView={{ scaleY: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1.5, ease: customEase }}
-            className="absolute left-[20px] sm:left-[36px] top-6 bottom-[-60px] w-[3px] origin-top z-0"
-            style={{ background: `${GREEN}66` }}
-          />
-          {steps.map((step, idx) => (
-            <motion.div
-              key={step.id}
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: idx * 0.2, ease: customEase }}
-              className="space-y-2 relative pl-8 z-10"
-            >
-              <div className="absolute left-[-4px] top-2 w-[11px] h-[11px] rounded-full" style={{ background: GREEN, boxShadow: `0 0 8px ${GREEN}99` }} />
-              <h3 className="text-[20px] font-bold text-white uppercase tracking-wider flex items-center gap-3">
-                <span className="font-mono text-[15px] mt-0.5" style={{ color: GREEN }}>{step.id}</span>
-                <span>{step.t}</span>
-              </h3>
-              <p className="text-zinc-400 text-[15px] font-medium leading-relaxed whitespace-pre-line">{step.d}</p>
-            </motion.div>
-          ))}
-        </div>
+        </ScaleFrame>
 
       </div>
     </section>

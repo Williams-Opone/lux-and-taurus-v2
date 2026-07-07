@@ -66,7 +66,7 @@ export const Comparison = () => {
   return (
     <section id="comparison" className="bg-black relative text-left font-sans select-none overflow-hidden pb-24 lg:pb-32">
       {/* Top Spine — self-draws, then carries current */}
-      <div className="absolute left-1/2 -translate-x-1/2 top-0 h-[60px] w-[3.5px] z-10 overflow-hidden hidden lg:block">
+      <div className="absolute left-1/2 -translate-x-1/2 top-0 h-[60px] w-[3.5px] z-10 overflow-hidden">
         <motion.div
           className="absolute inset-0 origin-top"
           style={{ background: GREEN, boxShadow: `0 0 10px ${GREEN}50` }}
@@ -214,6 +214,20 @@ export const Comparison = () => {
 
       </div>
 
+      {/* Bottom outlet spine — fills the section's padding gap so the
+          center spine runs unbroken into the FAQ below */}
+      <div className="absolute left-1/2 -translate-x-1/2 bottom-0 h-[96px] lg:h-[128px] w-[3.5px] z-10 overflow-hidden">
+        <motion.div
+          className="absolute inset-0 origin-top"
+          style={{ background: GREEN, boxShadow: `0 0 10px ${GREEN}50` }}
+          initial={{ scaleY: 0 }}
+          whileInView={{ scaleY: 1 }}
+          viewport={{ once: true, margin: '-40px' }}
+          transition={{ duration: 0.7, delay: 0.3, ease: customEase }}
+        />
+        <span aria-hidden className="cmp-pulse-out" />
+      </div>
+
       {/* component-scoped animation engine (transform-only) */}
       <style>{`
         /* ⚡ spine current pulse */
@@ -233,6 +247,23 @@ export const Comparison = () => {
           60%, 100% { transform: translateY(70px); opacity: 1; }
         }
 
+        /* outlet current — hands off into the FAQ spine below */
+        .cmp-pulse-out {
+          position: absolute;
+          left: 0; right: 0; top: 0;
+          height: 24px;
+          border-radius: 2px;
+          background: linear-gradient(180deg, transparent, #d1ffe3, transparent);
+          transform: translateY(-28px);
+          animation: cmp-pulse-out-run 3.8s cubic-bezier(0.6, 0, 0.4, 1) infinite;
+          animation-delay: 3.4s;
+        }
+        @keyframes cmp-pulse-out-run {
+          0% { transform: translateY(-28px); opacity: 0; }
+          10% { opacity: 1; }
+          60%, 100% { transform: translateY(140px); opacity: 1; }
+        }
+
         /* row hover — tint row, intensify our cell (paint-cheap, tiny areas) */
         .cmp-row { transition: background-color 0.3s ease; }
         .cmp-row:hover { background: rgba(255,255,255,0.02); }
@@ -243,7 +274,7 @@ export const Comparison = () => {
         }
 
         @media (prefers-reduced-motion: reduce) {
-          .cmp-pulse { animation: none; opacity: 0; }
+          .cmp-pulse, .cmp-pulse-out { animation: none; opacity: 0; }
         }
       `}</style>
     </section>

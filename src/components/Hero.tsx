@@ -119,8 +119,8 @@ export const Hero = () => {
       </div>
 
       <div className="relative max-w-4xl mx-auto px-6 text-center">
-        {/* ── spine in from the nav ── */}
-        <div className="relative mx-auto w-[3.5px] h-[64px] hidden lg:block overflow-hidden">
+        {/* ── spine in from the nav (visible on every device) ── */}
+        <div className="relative mx-auto w-[3.5px] h-[64px] overflow-hidden">
           <motion.div
             className="absolute inset-0 origin-top"
             style={{ background: GREEN, boxShadow: '0 0 10px rgba(74,222,128,0.35)' }}
@@ -199,8 +199,8 @@ export const Hero = () => {
           </button>
         </motion.div>
 
-        {/* ── spine out toward the Portfolio HUD ── */}
-        <div className="relative mx-auto mt-10 w-[3.5px] h-[72px] hidden lg:block overflow-hidden">
+        {/* ── spine out toward the Portfolio HUD (visible on every device) ── */}
+        <div className="relative mx-auto mt-10 w-[3.5px] h-[72px] overflow-hidden">
           <motion.div
             className="absolute inset-0 origin-top"
             style={{ background: GREEN, boxShadow: '0 0 10px rgba(74,222,128,0.35)' }}
@@ -210,7 +210,6 @@ export const Hero = () => {
           />
           <span aria-hidden className="hero-pulse" style={{ animationDelay: '3.3s' }} />
         </div>
-        <div className="h-16 lg:hidden" />
       </div>
 
       {/* component-scoped animation engine */}

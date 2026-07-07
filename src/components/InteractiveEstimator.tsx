@@ -152,7 +152,7 @@ export const InteractiveEstimator = () => {
     <section id="estimator" className="bg-black relative text-left font-sans select-none overflow-hidden pb-24">
       {/* Top Spine — plugs into the Pricing conduit above (root link),
           self-draws, then carries current down to the header */}
-      <div className="absolute left-1/2 -translate-x-1/2 top-0 h-[92px] w-[3.5px] z-10 overflow-hidden hidden lg:block">
+      <div className="absolute left-1/2 -translate-x-1/2 top-0 h-[92px] w-[3.5px] z-10 overflow-hidden">
         <motion.div
           className="absolute inset-0 origin-top"
           style={{ background: GREEN, boxShadow: `0 0 10px ${GREEN}50` }}

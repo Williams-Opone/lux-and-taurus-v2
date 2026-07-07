@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { ScaleFrame } from './ScaleFrame';
 
 const GREEN = '#4ade80';
 
@@ -66,10 +67,11 @@ export const Faq = () => {
 
   return (
     <section id="faq" className="bg-black relative overflow-hidden font-sans select-none">
-      <div className="px-6">
-        <div className="relative mx-auto w-full lg:w-[880px] max-w-[880px] pb-20 lg:pb-28">
-          {/* ============================ lg+ ============================ */}
-          <div className="relative hidden lg:block pt-2">
+      <div className="px-3 sm:px-6">
+        <div className="relative mx-auto w-full max-w-[880px] pb-20 lg:pb-28">
+          {/* ========== same structure on every device (scaled) ========== */}
+          <ScaleFrame designWidth={880}>
+          <div className="relative pt-2">
             {/* continuous center spine — self-draws, then carries current */}
             <div className="absolute left-1/2 -translate-x-1/2 top-0 bottom-[13px] w-[3.5px] z-0 overflow-hidden">
               <motion.div
@@ -230,82 +232,7 @@ export const Faq = () => {
             </motion.div>
           </div>
 
-          {/* ============================ mobile ============================ */}
-          <div className="lg:hidden pt-16">
-            {/* quotes stacked above the accordion */}
-            <div className="space-y-8 mb-12">
-              {FAQS.filter((f) => f.quote).map((f, qi) => (
-                <motion.div
-                  key={f.quote!.author}
-                  className="flex gap-4"
-                  initial={{ opacity: 0, x: -16 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true, margin: '-40px' }}
-                  transition={{ duration: 0.55, delay: qi * 0.15, ease: customEase }}
-                >
-                  <span
-                    className="w-[3px] rounded-full shrink-0"
-                    style={{ background: GREEN, boxShadow: `0 0 6px ${GREEN}` }}
-                  />
-                  <div>
-                    <p className="text-[20px] font-bold text-white tracking-tight leading-snug">
-                      {f.quote!.text.join(' ')}
-                    </p>
-                    <p className="text-[14px] text-zinc-400 mt-1">— {f.quote!.author}</p>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-
-            <div className="border-t border-zinc-800/80">
-              {FAQS.map((item, i) => (
-                <motion.div
-                  key={item.q}
-                  className="border-b border-zinc-800/80"
-                  initial={{ opacity: 0, y: 14 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: '-40px' }}
-                  transition={{ duration: 0.5, delay: i * 0.07, ease: customEase }}
-                >
-                  <button
-                    type="button"
-                    onClick={() => setOpen(open === i ? null : i)}
-                    className="w-full bg-transparent border-0 p-0 py-5 cursor-pointer flex items-center justify-between gap-4 text-left"
-                    aria-expanded={open === i}
-                  >
-                    <span
-                      className="text-[17px] font-bold tracking-tight transition-colors duration-300"
-                      style={{ color: open === i ? GREEN : '#ffffff' }}
-                    >
-                      {item.q}
-                    </span>
-                    <svg
-                      className="w-[17px] h-[17px] shrink-0 transition-transform duration-300"
-                      style={{
-                        stroke: GREEN,
-                        transform: open === i ? 'rotate(45deg)' : 'rotate(0deg)',
-                      }}
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      strokeWidth="2.5"
-                    >
-                      <path strokeLinecap="round" d="M12 4v16M4 12h16" />
-                    </svg>
-                  </button>
-                  <div
-                    className="grid transition-[grid-template-rows] duration-300 ease-out"
-                    style={{ gridTemplateRows: open === i ? '1fr' : '0fr' }}
-                  >
-                    <div className="overflow-hidden">
-                      <p className="text-[15px] text-zinc-400 leading-relaxed pb-5">
-                        {item.a}
-                      </p>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </div>
+          </ScaleFrame>
         </div>
       </div>
 

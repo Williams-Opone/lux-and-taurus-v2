@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion, useInView, animate } from 'framer-motion';
 import { subscribeProjects, ensureProjectsFetch, readProjectsCache, type ApiProject } from '../projectsStore';
+import { ScaleFrame } from './ScaleFrame';
 
 const GREEN = '#4ade80';
 const EASE = [0.16, 1, 0.3, 1] as const;
@@ -336,13 +337,13 @@ export const Portfolio = () => {
       id="vault"
       className="bg-black relative overflow-hidden text-left font-sans select-none pb-24 lg:pb-40"
     >
-      <div className="px-6">
-        <div className="max-w-[976px] mx-auto relative">
+      <div className="px-3 sm:px-6">
+        <ScaleFrame designWidth={976} className="relative">
 
           {/* ============================================================ */}
           {/* STATS HUD                                                     */}
           {/* ============================================================ */}
-          <div className="relative hidden lg:block h-[225px] mb-20 z-20">
+          <div className="relative h-[225px] mb-20 z-20">
             {/* spine — starts from top and draws down deep into the first project */}
             <div className="absolute left-1/2 -translate-x-1/2 top-0 bottom-[-220px] w-[3.5px] overflow-hidden">
               <motion.div
@@ -386,23 +387,6 @@ export const Portfolio = () => {
             </Branch>
           </div>
 
-          {/* Mobile stats fallback */}
-          <div className="lg:hidden grid grid-cols-2 gap-x-6 gap-y-5 pt-16 pb-14">
-            {['12 day average', '47+ builds', '$2.1M+ raised by clients', '98% on-time'].map(
-              (s) => (
-                <div key={s} className="flex items-start gap-2.5">
-                  <span
-                    className="w-2 h-2 rounded-full mt-2 shrink-0"
-                    style={{ background: GREEN, boxShadow: `0 0 6px ${GREEN}` }}
-                  />
-                  <span className="text-[19px] font-bold text-white tracking-tight leading-snug">
-                    {s}
-                  </span>
-                </div>
-              )
-            )}
-          </div>
-
           {/* ============================================================ */}
           {/* SECTION TITLE                                                 */}
           {/* ============================================================ */}
@@ -424,10 +408,10 @@ export const Portfolio = () => {
           {/* ============================================================ */}
           {/* CASE ROWS + SNAKE PIPELINES                                   */}
           {/* ============================================================ */}
-          <div className="relative space-y-20 lg:space-y-28">
+          <div className="relative space-y-28">
 
             {/* PIPELINE 1 - long descent from the stats HUD into card 1 */}
-            <div className="absolute hidden lg:block left-[340px] -top-[140px] w-[170px] h-[320px] pointer-events-none z-10">
+            <div className="absolute left-[340px] -top-[140px] w-[170px] h-[320px] pointer-events-none z-10">
               <svg className="w-full h-full drop-shadow-[0_0_8px_rgba(74,222,128,0.3)]" viewBox="0 0 170 320" fill="none" style={{ color: GREEN }}>
                 <Pipeline d="M 148 0 V 240 Q 148 295 95 295 H 54" delay={0.15} pulseDur={3.6} pulseBegin="1.4s" />
                 <ArrowHead points="50,295 66,288 66,302" delay={1.2} />
@@ -439,11 +423,11 @@ export const Portfolio = () => {
               const isLast = idx === projects.length - 1;
 
               return (
-                <div key={c.id} className="relative grid grid-cols-1 lg:grid-cols-12 gap-y-8 lg:gap-x-12 items-center">
+                <div key={c.id} className="relative grid grid-cols-12 gap-x-12 items-center">
 
                   {/* Dynamic Pipeline Logic */}
                   {!isLast && isEven && (
-                    <div className="absolute hidden lg:block left-[190px] top-full w-[420px] h-[270px] pointer-events-none z-10">
+                    <div className="absolute left-[190px] top-full w-[420px] h-[270px] pointer-events-none z-10">
                       <svg className="w-full h-full drop-shadow-[0_0_8px_rgba(74,222,128,0.3)]" viewBox="0 0 420 270" fill="none" style={{ color: GREEN }}>
                         <Pipeline
                           d="M 10 0 V 55 Q 10 112 67 112 H 290 Q 345 112 345 162 V 212 Q 345 262 393 262"
@@ -456,7 +440,7 @@ export const Portfolio = () => {
                   )}
 
                   {!isLast && !isEven && (
-                    <div className="absolute hidden lg:block left-[349px] top-full w-[340px] h-[270px] pointer-events-none z-10">
+                    <div className="absolute left-[349px] top-full w-[340px] h-[270px] pointer-events-none z-10">
                       <svg className="w-full h-full drop-shadow-[0_0_8px_rgba(74,222,128,0.3)]" viewBox="0 0 340 270" fill="none" style={{ color: GREEN }}>
                         <Pipeline
                           d="M 331 0 V 55 Q 331 112 274 112 H 150 Q 95 112 95 162 V 212 Q 95 262 47 262"
@@ -469,7 +453,7 @@ export const Portfolio = () => {
                   )}
 
                   {isLast && isEven && (
-                    <div className="absolute hidden lg:block left-[190px] top-full w-[320px] h-[170px] pointer-events-none z-10">
+                    <div className="absolute left-[190px] top-full w-[320px] h-[170px] pointer-events-none z-10">
                       <svg className="w-full h-full drop-shadow-[0_0_8px_rgba(74,222,128,0.3)]" viewBox="0 0 320 170" fill="none" style={{ color: GREEN }}>
                         <Pipeline
                           d="M 10 0 V 45 Q 10 100 65 100 H 245 Q 298 100 298 150 V 170"
@@ -481,7 +465,7 @@ export const Portfolio = () => {
                   )}
 
                   {isLast && !isEven && (
-                    <div className="absolute hidden lg:block right-[190px] top-full w-[320px] h-[170px] pointer-events-none z-10">
+                    <div className="absolute right-[190px] top-full w-[320px] h-[170px] pointer-events-none z-10">
                       <svg className="w-full h-full drop-shadow-[0_0_8px_rgba(74,222,128,0.3)]" viewBox="0 0 320 170" fill="none" style={{ color: GREEN }}>
                         <Pipeline
                           d="M 310 0 V 45 Q 310 100 255 100 H 75 Q 22 100 22 150 V 170"
@@ -492,8 +476,8 @@ export const Portfolio = () => {
                     </div>
                   )}
 
-                  {/* CARDS */}
-                  <div className={`lg:col-span-5 ${isEven ? '' : 'order-2 lg:order-1 lg:col-span-6'}`}>
+                  {/* CARDS — same 12-col structure on every device */}
+                  <div className={isEven ? 'col-span-5' : 'col-span-6'}>
                     {isEven ? (
                       <BrowserCard img={c.img} title={c.title} url={c.url} from="left" />
                     ) : (
@@ -501,7 +485,7 @@ export const Portfolio = () => {
                     )}
                   </div>
 
-                  <div className={`${isEven ? 'lg:col-span-6 lg:col-start-7' : 'order-1 lg:order-2 lg:col-span-5 lg:col-start-8'}`}>
+                  <div className={isEven ? 'col-span-6 col-start-7' : 'col-span-5 col-start-8'}>
                     {isEven ? (
                       <CaseCopy c={c} from="right" />
                     ) : (
@@ -513,7 +497,7 @@ export const Portfolio = () => {
               );
             })}
           </div>
-        </div>
+        </ScaleFrame>
       </div>
 
       <style>{`

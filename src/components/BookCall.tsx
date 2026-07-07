@@ -149,7 +149,7 @@ export const BookCall = () => {
       </motion.header>
 
       {/* inlet spine dropping from the page header */}
-      <div className="absolute left-1/2 -translate-x-1/2 top-[76px] h-[92px] w-[3.5px] z-10 overflow-hidden hidden lg:block">
+      <div className="absolute left-1/2 -translate-x-1/2 top-[76px] h-[92px] w-[3.5px] z-10 overflow-hidden">
         <motion.div
           className="absolute inset-0 origin-top"
           style={{ background: GREEN, boxShadow: `0 0 10px ${GREEN}50` }}
@@ -367,7 +367,7 @@ export const BookCall = () => {
 
                 {status === 'error' && (
                   <p className="text-[13px] font-semibold text-red-400/90">
-                    Something broke on our end — try again, or email contact@luxandtaurus.com directly.
+                    Something broke on our end — try again, or email hello@luxandtaurus.com directly.
                   </p>
                 )}
 
