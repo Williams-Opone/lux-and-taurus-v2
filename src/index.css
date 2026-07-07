@@ -1,112 +1,147 @@
 @import "tailwindcss";
 
-/* --- ✦ LUX & TAURUS BRAND SYSTEM VARIABLES --- */
+/* ---------------------------------------------------
+   ✦ DESIGN TOKENS
+--------------------------------------------------- */
 :root {
   color-scheme: dark;
-  --bg-main: #0A0A0F;
-  --bg-surface: #111115;
-  --color-primary: #00C4A0;
-  --color-accent: #D4AF37;
-  --text-primary: #F4F4F6;
-  --text-secondary: #9CA3AF;
-  --border-gold: rgba(212, 175, 55, 0.1);
+
+  /* Accent + glow tokens */
+  --color-accent: #10B981;
+  --color-accent-dark: #064D32;
+  --color-emerald-glow: rgba(16, 185, 129, 0.12);
+  --color-gold-glow: rgba(212, 175, 55, 0.08);
+
+  /* Base palette */
+  --color-bg: #000000;
+  --color-surface: #0A0A0A;          /* card / panel backgrounds */
+  --color-border: rgba(255, 255, 255, 0.08);
+  --color-text: #FFFFFF;
+  --color-text-muted: #A0A0A0;       /* subtext, descriptions, eyebrows */
+
+  /* Layout */
+  --container-width: 1100px;
+  --section-padding-y: 120px;
+  --section-padding-y-sm: 64px;
+
+  /* Spine */
+  --spine-width: 4px;
+  --spine-color: rgba(16, 185, 129, 0.15);
 }
 
+/* ---------------------------------------------------
+   ✦ BASE ELEMENTS
+--------------------------------------------------- */
 html {
   scroll-behavior: smooth;
+  background-color: var(--color-bg);
 }
 
 body {
-  background-color: var(--bg-main);
-  color: var(--text-primary);
   margin: 0;
+  background-color: var(--color-bg);
+  color: var(--color-text);
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  line-height: 1.75;
   -webkit-font-smoothing: antialiased;
 }
 
-/* Premium Heading Hierarchy (Satoshi Weight Settings) */
-h1, h2, h3, h4, h5, h6 {
-  font-family: 'Satoshi', 'Inter', sans-serif;
-  color: var(--text-primary);
-  letter-spacing: -0.02em;
+/* ---------------------------------------------------
+   ✦ LAYOUT UTILITIES
+--------------------------------------------------- */
+.container {
+  max-width: var(--container-width);
+  margin: 0 auto;
+  padding: 0 24px;
 }
 
-/* Custom Premium Emerald Selection Glow (Fixed color expression) */
-::selection {
-  background-color: rgba(0, 196, 160, 0.2);
-  color: white;
+.section {
+  position: relative;
+  padding-top: var(--section-padding-y);
+  padding-bottom: var(--section-padding-y);
 }
 
-/* Desktop Custom Cursor Override Bridge */
-@media (min-width: 768px) {
-  html, body, a, button {
-    cursor: none !important;
-  }
+.section-sm {
+  position: relative;
+  padding-top: var(--section-padding-y-sm);
+  padding-bottom: var(--section-padding-y-sm);
 }
 
-/* Kinetic Scanline Keyframes */
-@keyframes scan {
-  from { transform: translateY(-100%); }
-  to { transform: translateY(100vh); }
+.text-muted {
+  color: var(--color-text-muted);
 }
 
-.animate-scan {
-  animation: scan 8s linear infinite;
+/* ---------------------------------------------------
+   ✦ Master Pipeline Spine Anchor Framework
+   Contract: parent MUST have position: relative
+   and an explicit (or content-derived) height.
+   This class only draws the vertical line — it does
+   NOT set top/height, so each section controls its
+   own spine length via --spine-top / --spine-height.
+--------------------------------------------------- */
+.pipeline-spine-axis {
+  position: absolute;
+  left: 50%;
+  top: var(--spine-top, 0);
+  height: var(--spine-height, 100%);
+  transform: translateX(-50%);
+  width: var(--spine-width);
+  background: var(--spine-color);
+  z-index: 10;
 }
 
-/* ✨ FIXED: Cleaned and updated Tailwind v4 utility class compilation structure */
-@utility btn-cyber-glitch {
-  &:hover {
-    text-shadow: 2px 0 var(--color-primary), -2px 0 var(--color-accent);
-    animation: glitch-anim 0.3s cubic-bezier(.25, .46, .45, .94) both infinite;
-  }
+.pipeline-node {
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--color-accent-dark);
+  border: 2px solid var(--color-accent);
+  z-index: 11;
 }
 
-@keyframes glitch-anim {
-  0% { transform: translate(0) }
-  20% { transform: translate(-2px, 2px) }
-  40% { transform: translate(-2px, -2px) }
-  60% { transform: translate(2px, 2px) }
-  80% { transform: translate(2px, -2px) }
-  100% { transform: translate(0) }
+.pipeline-node-active {
+  background: var(--color-accent);
+  box-shadow: 0 0 14px var(--color-accent);
 }
 
-/* ==========================================================================
-   💎 PREMIUM TECH AGENCY SLIM SCROLLBAR CONFIGURATION
-   ========================================================================== */
+/* ---------------------------------------------------
+   ✦ Sub-layer Pixel Custom Shaders
+--------------------------------------------------- */
+.luxury-grid-canvas {
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
 
-/* Webkit Engine (Chrome, Safari, Edge) */
+/* ---------------------------------------------------
+   ✦ PREMIUM NARROW DARK-GREEN SCROLLBAR
+--------------------------------------------------- */
+
+/* Webkit Engine (Chrome, Safari, Edge, Opera) */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--bg-main);
-  border-left: 1px solid rgba(212, 175, 55, 0.05);
+  background: var(--color-bg);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(to bottom, #064d32, var(--color-primary));
+  background: var(--color-accent-dark);
   border-radius: 100px;
-  border: 1px solid rgba(10, 10, 15, 0.4);
-  transition: all 0.3s ease;
+  border: 1px solid var(--color-bg);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(to bottom, var(--color-primary), #34d399);
-  box-shadow: 0 0 12px rgba(0, 196, 160, 0.4);
+  background: var(--color-accent);
 }
 
-::-webkit-scrollbar-corner {
-  background: var(--bg-main);
-}
-
-/* Firefox Fallback */
-@supports (scrollbar-color: auto) {
-  html {
-    scrollbar-width: thin;
-    scrollbar-color: #064d32 var(--bg-main);
-  }
+/* Firefox Engine */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-accent-dark) var(--color-bg);
 }

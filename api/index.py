@@ -266,7 +266,7 @@ def scrape_remoteok():
 def contact():
     try:
         data = request.json or {}
-        
+
         name = data.get("name", "Unknown")
         email = data.get("email", "No Email")
         phone = data.get("phone", "Not Provided")
@@ -291,6 +291,7 @@ def contact():
             if not all([user, password, receiver]):
                 raise ValueError("SMTP variables are unconfigured.")
 
+            # ---------- EMAIL 1: internal brief (to you) ----------
             msg = MIMEMultipart()
             msg['From'] = user
             msg['To'] = receiver
@@ -309,16 +310,148 @@ def contact():
             )
             msg.attach(MIMEText(body, 'plain'))
 
+            # ---------- EMAIL 2: confirmation (to the user) ----------
+                        # ---------- EMAIL 2: confirmation (to the user) ----------
+            confirm = MIMEMultipart('alternative')
+            confirm['From'] = f"Lux & Taurus <{user}>"
+            confirm['To'] = email
+            confirm['Subject'] = "Your call is booked \u2014 Lux & Taurus"
+            confirm.add_header('reply-to', receiver)
+
+            # plain-text fallback (clients that block HTML)
+            confirm_text = (
+                f"Hi {name},\n\n"
+                f"Your free strategy call is booked. We've received your brief "
+                f"({project_type}) and we're reading it now.\n\n"
+                f"WHAT HAPPENS NEXT\n"
+                f"1. We review your brief before the call.\n"
+                f"2. Within 24 hours, we'll reply to lock in a time.\n"
+                f"3. On the call (30 min), we scope your MVP: features, timeline, fixed price.\n\n"
+                f"Guarantee: 14 days to launch \u2014 or we work free until it's live.\n\n"
+                f"Reply to this email to add anything to your brief.\n\n"
+                f"\u2014 The Lux & Taurus team\nluxandtaurus.com\n"
+            )
+
+            # branded HTML version — black + #4ade80, table-based, inline styles
+            confirm_html = f"""\
+<!DOCTYPE html>
+<html>
+<body style="margin:0;padding:0;background-color:#0a0a0c;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#0a0a0c;padding:32px 16px;">
+    <tr><td align="center">
+      <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
+
+        <!-- wordmark -->
+        <tr><td align="center" style="padding-bottom:24px;">
+          <span style="font-family:Arial,Helvetica,sans-serif;font-size:20px;font-weight:800;color:#ffffff;letter-spacing:0.5px;">
+            LUX <span style="color:#4ade80;">&amp;</span> TAURUS
+          </span>
+        </td></tr>
+
+        <!-- card -->
+        <tr><td style="background-color:#101013;border:1px solid #2a2a2e;border-radius:16px;padding:36px 32px;">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+
+            <!-- green check badge -->
+            <tr><td align="center" style="padding-bottom:20px;">
+              <table role="presentation" cellpadding="0" cellspacing="0"><tr>
+                <td align="center" style="width:56px;height:56px;border-radius:50%;background-color:#14442c;border:2px solid #4ade80;font-family:Arial,sans-serif;font-size:26px;line-height:56px;color:#4ade80;font-weight:bold;">&#10003;</td>
+              </tr></table>
+            </td></tr>
+
+            <tr><td align="center" style="font-family:Arial,Helvetica,sans-serif;font-size:24px;font-weight:800;color:#ffffff;padding-bottom:8px;">
+              Your call is booked, {name}.
+            </td></tr>
+            <tr><td align="center" style="font-family:Arial,Helvetica,sans-serif;font-size:15px;color:#a1a1aa;line-height:1.6;padding-bottom:24px;">
+              We've received your brief and we're reading it now.
+            </td></tr>
+
+            <!-- package chip -->
+            <tr><td align="center" style="padding-bottom:28px;">
+              <span style="display:inline-block;background-color:#14442c;border:1px solid #4ade80;border-radius:999px;padding:8px 20px;font-family:Arial,sans-serif;font-size:13px;font-weight:bold;color:#4ade80;letter-spacing:1px;">
+                {project_type.upper()}
+              </span>
+            </td></tr>
+
+            <!-- divider -->
+            <tr><td style="border-top:1px solid #2a2a2e;padding-top:24px;"></td></tr>
+
+            <!-- steps -->
+            <tr><td style="font-family:Arial,Helvetica,sans-serif;font-size:12px;font-weight:bold;color:#71717a;letter-spacing:2px;padding-bottom:16px;">
+              WHAT HAPPENS NEXT
+            </td></tr>
+            <tr><td style="padding-bottom:14px;">
+              <table role="presentation" cellpadding="0" cellspacing="0"><tr>
+                <td valign="top" style="font-family:Courier,monospace;font-size:13px;font-weight:bold;color:#4ade80;padding-right:14px;">01</td>
+                <td style="font-family:Arial,sans-serif;font-size:14px;color:#e4e4e7;line-height:1.5;"><b style="color:#ffffff;">We review your brief</b> before the call.</td>
+              </tr></table>
+            </td></tr>
+            <tr><td style="padding-bottom:14px;">
+              <table role="presentation" cellpadding="0" cellspacing="0"><tr>
+                <td valign="top" style="font-family:Courier,monospace;font-size:13px;font-weight:bold;color:#4ade80;padding-right:14px;">02</td>
+                <td style="font-family:Arial,sans-serif;font-size:14px;color:#e4e4e7;line-height:1.5;"><b style="color:#ffffff;">Within 24 hours</b>, we reply to lock in a time that works for you.</td>
+              </tr></table>
+            </td></tr>
+            <tr><td style="padding-bottom:26px;">
+              <table role="presentation" cellpadding="0" cellspacing="0"><tr>
+                <td valign="top" style="font-family:Courier,monospace;font-size:13px;font-weight:bold;color:#4ade80;padding-right:14px;">03</td>
+                <td style="font-family:Arial,sans-serif;font-size:14px;color:#e4e4e7;line-height:1.5;"><b style="color:#ffffff;">30-min call:</b> we scope your MVP together \u2014 features, timeline, fixed price.</td>
+              </tr></table>
+            </td></tr>
+
+            <!-- guarantee bar -->
+            <tr><td align="center" style="background-color:#0c2418;border:1px solid #2c6e49;border-radius:12px;padding:14px 18px;">
+              <span style="font-family:Arial,sans-serif;font-size:13.5px;font-weight:bold;color:#4ade80;">
+                &#9096; 14 days to launch \u2014 or we work free until it's live.
+              </span>
+            </td></tr>
+
+            <!-- CTA -->
+            <tr><td align="center" style="padding-top:28px;">
+              <a href="mailto:{receiver}?subject=Adding%20to%20my%20brief%20(ID%20{new_lead.id})"
+                 style="display:inline-block;background-color:#4ade80;color:#000000;font-family:Arial,sans-serif;font-size:14px;font-weight:800;text-decoration:none;padding:14px 32px;border-radius:999px;letter-spacing:1px;">
+                ADD TO MY BRIEF &#8594;
+              </a>
+            </td></tr>
+
+          </table>
+        </td></tr>
+
+        <!-- footer -->
+        <tr><td align="center" style="padding-top:24px;">
+          <span style="font-family:Arial,sans-serif;font-size:12px;color:#52525b;line-height:1.7;">
+            Lux &amp; Taurus \u2014 MVPs live in 21 days or less<br>
+            <a href="https://luxandtaurus.com" style="color:#4ade80;text-decoration:none;">luxandtaurus.com</a>
+          </span>
+        </td></tr>
+
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>"""
+
+            confirm.attach(MIMEText(confirm_text, 'plain'))
+            confirm.attach(MIMEText(confirm_html, 'html'))
+
+            # one connection, both sends
             with smtplib.SMTP_SSL(app.config['SMTP_SERVER'], app.config['SMTP_PORT'], timeout=15) as server:
                 server.login(user, password)
                 server.sendmail(user, receiver, msg.as_string())
-            
+                # user confirmation is best-effort: if their address is
+                # invalid, don't fail the whole request
+                try:
+                    if email and "@" in email:
+                        server.sendmail(user, email, confirm.as_string())
+                except Exception as confirm_err:
+                    print(f"!! CONFIRMATION EMAIL FAILED (lead + internal OK): {confirm_err}")
+
             return jsonify({"status": "success", "message": "Mission brief logged and transmitted."}), 200
 
         except Exception as mail_err:
             print(f"!!! DATABASE SAVED, BUT EMAIL FAILED: {str(mail_err)}")
             return jsonify({
-                "status": "success", 
+                "status": "success",
                 "message": "Mission logged successfully. Our team will reach out."
             }), 200
 
