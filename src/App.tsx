@@ -11,11 +11,12 @@ import { BookCall } from './components/BookCall';
 import { BaseFooter } from './components/BaseFooter';
 import { PrivacyPage, TermsPage } from './components/LegalPage';
 import { AdminDashboard } from './components/AdminDashboard';
+import { ScaleFrame } from './components/ScaleFrame';
 import { isBookRoute, isPrivacyRoute, isTermsRoute, isAdminRoute } from './router';
 
 /* 🔁 YOUR LOGO LIVES HERE — replace src/assets/logo.png with any image
    (png / jpg / webp / ...) and update the filename below if it differs. */
-import logoImg from './assets/landtlogo2.png';
+import logoImg from './assets/logo.png';
 
 export default function App() {
   const [route, setRoute] = useState(window.location.hash);
@@ -34,19 +35,24 @@ export default function App() {
     return (
       <main className="min-h-screen bg-black">
         <BookCall />
-        <BaseFooter />
       </main>
     );
   }
+
+  /* ---------- admin (unlisted) ---------- */
   if (isAdminRoute(route)) {
-    return <main className="min-h-screen bg-black"><AdminDashboard /></main>;
+    return (
+      <main className="min-h-screen bg-black">
+        <AdminDashboard />
+      </main>
+    );
   }
+
   /* ---------- legal pages ---------- */
   if (isPrivacyRoute(route)) {
     return (
       <main className="min-h-screen bg-black">
         <PrivacyPage />
-        <BaseFooter />
       </main>
     );
   }
@@ -54,23 +60,29 @@ export default function App() {
     return (
       <main className="min-h-screen bg-black">
         <TermsPage />
-        <BaseFooter />
       </main>
     );
   }
 
-  /* ---------- main site ---------- */
+  /* ---------- main site ----------
+     ONE page-level ScaleFrame = ONE scale factor for every section.
+     Every font, spine width, and gap shrinks by the same ratio on
+     phones/tablets — no more per-section size inconsistency.
+     (The Nav stays outside: it's a fixed bar with its own compact
+     responsive layout, and position:fixed breaks inside transforms.) */
   return (
     <main className="min-h-screen bg-black pt-[96px]">
       <Nav logoSrc={logoImg} />
-      <Hero />
-      <Portfolio />
-      <MethodBlock />
-      <PricingMatrix />
-      <Estimator />
-      <Comparison />
-      <Faq />
-      <BaseFooter />
+      <ScaleFrame designWidth={1024}>
+        <Hero />
+        <Portfolio />
+        <MethodBlock />
+        <PricingMatrix />
+        <Estimator />
+        <Comparison />
+        <Faq />
+        <BaseFooter />
+      </ScaleFrame>
     </main>
   );
 }
