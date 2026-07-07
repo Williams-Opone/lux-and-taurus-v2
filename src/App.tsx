@@ -16,7 +16,7 @@ import { isBookRoute, isPrivacyRoute, isTermsRoute, isAdminRoute } from './route
 
 /* 🔁 YOUR LOGO LIVES HERE — replace src/assets/logo.png with any image
    (png / jpg / webp / ...) and update the filename below if it differs. */
-import logoImg from './assets/logo.png';
+import logoImg from './assets/landtnoblogo.png';
 
 export default function App() {
   const [route, setRoute] = useState(window.location.hash);

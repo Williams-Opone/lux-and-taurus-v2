@@ -23,7 +23,7 @@ type NavProps = {
   logoBlend?: boolean;
 };
 
-export const Nav = ({ logoSrc = '/logo.png', logoBlend = true }: NavProps) => {
+export const Nav = ({ logoSrc = '/landtnoblogo.png', logoBlend = true }: NavProps) => {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
