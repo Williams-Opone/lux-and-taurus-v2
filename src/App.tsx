@@ -11,8 +11,16 @@ import { BookCall } from './components/BookCall';
 import { BaseFooter } from './components/BaseFooter';
 import { PrivacyPage, TermsPage } from './components/LegalPage';
 import { AdminDashboard } from './components/AdminDashboard';
-import { ScaleFrame } from './components/ScaleFrame';
-import { isBookRoute, isPrivacyRoute, isTermsRoute, isAdminRoute } from './router';
+import { NotFoundPage, ServerErrorPage, ForbiddenPage } from './components/ErrorPage';
+import {
+  isBookRoute,
+  isPrivacyRoute,
+  isTermsRoute,
+  isAdminRoute,
+  isError500Route,
+  isError403Route,
+  isUnknownRoute,
+} from './router';
 
 /* 🔁 YOUR LOGO LIVES HERE — replace src/assets/logo.png with any image
    (png / jpg / webp / ...) and update the filename below if it differs. */
@@ -35,6 +43,7 @@ export default function App() {
     return (
       <main className="min-h-screen bg-black">
         <BookCall />
+        <BaseFooter />
       </main>
     );
   }
@@ -53,6 +62,7 @@ export default function App() {
     return (
       <main className="min-h-screen bg-black">
         <PrivacyPage />
+        <BaseFooter />
       </main>
     );
   }
@@ -60,29 +70,44 @@ export default function App() {
     return (
       <main className="min-h-screen bg-black">
         <TermsPage />
+        <BaseFooter />
       </main>
     );
   }
 
+  /* ---------- error pages ---------- */
+  if (isError500Route(route)) {
+    return <main className="min-h-screen bg-black"><ServerErrorPage /></main>;
+  }
+  if (isError403Route(route)) {
+    return <main className="min-h-screen bg-black"><ForbiddenPage /></main>;
+  }
+  /* unknown '#/...' routes → 404 (must be the LAST route check) */
+  if (isUnknownRoute(route)) {
+    return <main className="min-h-screen bg-black"><NotFoundPage /></main>;
+  }
+
   /* ---------- main site ----------
-     ONE page-level ScaleFrame = ONE scale factor for every section.
-     Every font, spine width, and gap shrinks by the same ratio on
-     phones/tablets — no more per-section size inconsistency.
-     (The Nav stays outside: it's a fixed bar with its own compact
-     responsive layout, and position:fixed breaks inside transforms.) */
+     HYBRID responsive strategy:
+     · Hero / Pricing / Estimator / Comparison / Footer reflow
+       NATIVELY — full-size readable text and tappable controls on
+       mobile (these are the conversion-critical sections).
+     · Portfolio / Method / FAQ keep their exact pipeline geometry
+       via their own internal ScaleFrames (with minScale floors so
+       they never shrink into unreadability).
+     · The root-link spine renders at 3.5px in native sections and
+       scales modestly in framed ones — visually continuous. */
   return (
     <main className="min-h-screen bg-black pt-[96px]">
       <Nav logoSrc={logoImg} />
-      <ScaleFrame designWidth={1024}>
-        <Hero />
-        <Portfolio />
-        <MethodBlock />
-        <PricingMatrix />
-        <Estimator />
-        <Comparison />
-        <Faq />
-        <BaseFooter />
-      </ScaleFrame>
+      <Hero />
+      <Portfolio />
+      <MethodBlock />
+      <PricingMatrix />
+      <Estimator />
+      <Comparison />
+      <Faq />
+      <BaseFooter />
     </main>
   );
 }

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { goToBook } from '../router';   // ← add this line
+import { goToBook } from '../router';
+
 const GREEN = '#4ade80';
 
 /* ------------------------------------------------------------------ */
@@ -8,6 +9,9 @@ const GREEN = '#4ade80';
 /*  energy beam tracing its border (conic-gradient + @property),       */
 /*  staggered entrance, underline-sweep links, shimmer CALL pill,      */
 /*  and a breathing glow behind the logo.                              */
+/*                                                                     */
+/*  Responsive: below sm the links collapse into a ☰ hamburger that    */
+/*  unfolds a dropdown panel in the same shell language as the bar.    */
 /* ------------------------------------------------------------------ */
 
 const NAV_LINKS = [
@@ -17,7 +21,7 @@ const NAV_LINKS = [
 ];
 
 type NavProps = {
-  /** Path or URL to any image (png/jpg/webp/...). Defaults to /logo.png */
+  /** Path or URL to any image (png/jpg/webp/...). Defaults to /landtnoblogo.png */
   logoSrc?: string;
   /** Set false if your logo has real transparency or dark colors to keep */
   logoBlend?: boolean;
@@ -25,6 +29,7 @@ type NavProps = {
 
 export const Nav = ({ logoSrc = '/landtnoblogo.png', logoBlend = true }: NavProps) => {
   const [scrolled, setScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -34,6 +39,7 @@ export const Nav = ({ logoSrc = '/landtnoblogo.png', logoBlend = true }: NavProp
   }, []);
 
   const jumpToSection = (id: string) => {
+    setMenuOpen(false);
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
   };
 
@@ -45,7 +51,7 @@ export const Nav = ({ logoSrc = '/landtnoblogo.png', logoBlend = true }: NavProp
       className="fixed top-0 inset-x-0 z-50 px-3 pt-3 sm:px-4"
     >
       <nav
-        className={`nav-shell relative mx-auto max-w-[1040px] h-[62px] rounded-2xl border flex items-center justify-between px-6 sm:px-8 transition-all duration-300 ${
+        className={`nav-shell relative mx-auto max-w-[1040px] h-[56px] sm:h-[62px] rounded-2xl border flex items-center justify-between px-4 sm:px-8 transition-all duration-300 ${
           scrolled
             ? 'bg-black/85 border-zinc-800 shadow-[0_10px_40px_rgba(0,0,0,0.6)] backdrop-blur-md'
             : 'bg-[#060607] border-zinc-800/70'
@@ -66,25 +72,24 @@ export const Nav = ({ logoSrc = '/landtnoblogo.png', logoBlend = true }: NavProp
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.15, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          className="relative bg-transparent border-0 p-0 cursor-pointer flex items-center gap-2.5 select-none group/logo"
+          className="relative bg-transparent border-0 p-0 cursor-pointer flex items-center gap-2 sm:gap-2.5 select-none group/logo"
         >
           {/* breathing glow behind the mark */}
           <span aria-hidden className="nav-logo-glow" />
-          
-          {/* Standard image tag replacing the <Logo /> component */}
+
           <img
-            src="../landtnoblogo.png"
+            src={logoSrc}
             alt="Lux & Taurus Logo"
-            className={`w-[30px] h-[35px] shrink-0 object-contain relative z-10 transition-transform duration-300 group-hover/logo:scale-110 ${logoBlend ? 'mix-blend-screen' : ''}`}
+            className={`w-[26px] h-[30px] sm:w-[30px] sm:h-[35px] shrink-0 object-contain relative z-10 transition-transform duration-300 group-hover/logo:scale-110 ${logoBlend ? 'mix-blend-screen' : ''}`}
           />
-          
-          <span className="relative z-10 text-white font-extrabold text-[18px] tracking-tight whitespace-nowrap">
+
+          <span className="relative z-10 text-white font-extrabold text-[15px] sm:text-[18px] tracking-tight whitespace-nowrap">
             LUX <span style={{ color: GREEN }}>&amp;</span> TAURUS
           </span>
         </motion.button>
 
         {/* LINKS + CTA */}
-        <div className="flex items-center gap-5 sm:gap-8">
+        <div className="flex items-center gap-2.5 sm:gap-8">
           <div className="hidden sm:flex items-center gap-7">
             {NAV_LINKS.map((link, i) => (
               <motion.button
@@ -110,7 +115,7 @@ export const Nav = ({ logoSrc = '/landtnoblogo.png', logoBlend = true }: NavProp
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.55, duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
             onClick={() => goToBook()}
-            className="nav-cta group/cta relative overflow-hidden cursor-pointer bg-transparent rounded-full border h-[36px] px-4 inline-flex items-center gap-1 text-[13.5px] font-semibold tracking-[0.04em] transition-all duration-300 active:scale-95"
+            className="nav-cta group/cta relative overflow-hidden cursor-pointer bg-transparent rounded-full border h-[34px] sm:h-[36px] px-3 sm:px-4 inline-flex items-center gap-1 text-[12.5px] sm:text-[13.5px] font-semibold tracking-[0.04em] transition-all duration-300 active:scale-95"
             style={{ borderColor: 'rgba(74,222,128,0.7)', color: GREEN }}
           >
             {/* shimmer sweep */}
@@ -127,8 +132,55 @@ export const Nav = ({ logoSrc = '/landtnoblogo.png', logoBlend = true }: NavProp
             </svg>
             <span className="relative z-10">]</span>
           </motion.button>
+
+          {/* ☰ hamburger — mobile only, morphs into ✕ when open */}
+          <button
+            onClick={() => setMenuOpen((v) => !v)}
+            aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+            aria-expanded={menuOpen}
+            className="sm:hidden relative bg-transparent border-0 p-1.5 -mr-1 cursor-pointer flex flex-col justify-center items-center gap-[5px] w-[34px] h-[34px]"
+          >
+            <span
+              className="block w-[18px] h-[2px] rounded-full bg-white transition-transform duration-300"
+              style={{ transform: menuOpen ? 'translateY(7px) rotate(45deg)' : 'none' }}
+            />
+            <span
+              className="block w-[18px] h-[2px] rounded-full bg-white transition-opacity duration-300"
+              style={{ opacity: menuOpen ? 0 : 1 }}
+            />
+            <span
+              className="block w-[18px] h-[2px] rounded-full bg-white transition-transform duration-300"
+              style={{ transform: menuOpen ? 'translateY(-7px) rotate(-45deg)' : 'none' }}
+            />
+          </button>
         </div>
       </nav>
+
+      {/* 📱 mobile dropdown menu — same shell language as the bar */}
+      <div
+        className="sm:hidden mx-auto max-w-[1040px] overflow-hidden transition-[grid-template-rows] duration-300 ease-out grid"
+        style={{ gridTemplateRows: menuOpen ? '1fr' : '0fr' }}
+      >
+        <div className="overflow-hidden">
+          <div
+            className="mt-2 rounded-2xl border border-zinc-800 bg-black/90 backdrop-blur-md shadow-[0_10px_40px_rgba(0,0,0,0.6)] px-5 py-3"
+            style={{ boxShadow: 'inset 0 0 0 1px rgba(74,222,128,0.08)' }}
+          >
+            {NAV_LINKS.map((link, i) => (
+              <button
+                key={link.id}
+                onClick={() => jumpToSection(link.id)}
+                className={`w-full bg-transparent border-0 px-0 py-3.5 cursor-pointer flex items-center justify-between text-left text-[15px] font-semibold tracking-[0.03em] text-white active:text-[#4ade80] ${
+                  i < NAV_LINKS.length - 1 ? 'border-b border-zinc-800/70' : ''
+                }`}
+              >
+                <span>{link.label}</span>
+                <span style={{ color: GREEN }}>→</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
 
       {/* component-scoped animation engine */}
       <style>{`
@@ -164,7 +216,6 @@ export const Nav = ({ logoSrc = '/landtnoblogo.png', logoBlend = true }: NavProp
             linear-gradient(#000 0 0);
           mask-composite: exclude;
           animation: nav-orbit 5s linear infinite;
-          filter: drop-shadow(0 0 6px rgba(74,222,128,0.55));
         }
         @keyframes nav-orbit {
           to { --nav-angle: 360deg; }

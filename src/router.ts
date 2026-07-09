@@ -46,6 +46,22 @@ export const TERMS_ROUTE = '#/terms';
 
 export const isPrivacyRoute = (hash: string) => hash.startsWith(PRIVACY_ROUTE);
 export const isTermsRoute = (hash: string) => hash.startsWith(TERMS_ROUTE);
+
 /* -------- admin (unlisted — no links point here) -------- */
 export const ADMIN_ROUTE = '#/admin';
 export const isAdminRoute = (hash: string) => hash.startsWith(ADMIN_ROUTE);
+
+/* -------- error pages -------- */
+export const ERROR_500_ROUTE = '#/error';
+export const ERROR_403_ROUTE = '#/forbidden';
+export const isError500Route = (hash: string) => hash.startsWith(ERROR_500_ROUTE);
+export const isError403Route = (hash: string) => hash.startsWith(ERROR_403_ROUTE);
+export const goToError = () => { window.location.hash = ERROR_500_ROUTE; };
+
+/* any '#/...' hash that no route above claims → 404.
+   Plain section anchors like '#pricing' are NOT routes and stay valid. */
+export const isUnknownRoute = (hash: string) =>
+  hash.startsWith('#/') &&
+  ![BOOK_ROUTE, PRIVACY_ROUTE, TERMS_ROUTE, ADMIN_ROUTE, ERROR_500_ROUTE, ERROR_403_ROUTE].some(
+    (r) => hash.startsWith(r)
+  );

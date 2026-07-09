@@ -465,8 +465,9 @@ def get_leads():
     auth_header = request.headers.get('Authorization')
     if auth_header != f"Bearer {app.config.get('ADMIN_SECRET_KEY')}":
         return jsonify({"error": "Unauthorized"}), 401
-    
+        
     try:
+        # Fetch leads from your database model
         leads = Lead.query.order_by(Lead.created_at.desc()).all()
         return jsonify([{
             "id": l.id,
@@ -476,12 +477,11 @@ def get_leads():
             "project_type": l.project_type,
             "message": l.message,
             "status": l.status,
-            # ✨ FIXED: Safe conditional check checks if timestamp exists before running .isoformat()
-            "created_at": l.created_at.isoformat() if l.created_at is not None else dayjs_fallback_placeholder()
+            "created_at": l.created_at.isoformat() if hasattr(l.created_at, 'isoformat') else str(l.created_at)
         } for l in leads]), 200
     except Exception as e:
-        print(f"!!! ADMIN LEADS FETCH CRASH: {str(e)}")
-        return jsonify({"error": f"Internal transmission failure: {str(e)}"}), 500
+        print(f"!!! INTEL FETCH ERROR: {str(e)}")
+        return jsonify({"status": "error", "message": "Failed to stream lead data streams."}), 500
 
 # Simple helper function to provide a fallback string if columns are blank
 def dayjs_fallback_placeholder():
@@ -585,4 +585,4 @@ def delete_project(project_id):
         return jsonify({"status": "error", "message": "Purge transaction aborted."}), 500
     
 if __name__ == "__main__":
-    app.run(debug=True, port=5000)
+    app.run(host='127.0.0.1', port=5000, debug=True)

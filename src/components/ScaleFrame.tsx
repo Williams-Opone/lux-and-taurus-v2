@@ -4,23 +4,27 @@ import { useLayoutEffect, useRef, useState } from 'react';
 /*  ScaleFrame — renders children at a fixed design width and scales   */
 /*  the whole block down proportionally to fit narrower screens.       */
 /*                                                                     */
-/*  Why: the pipeline sections (Portfolio / Method / FAQ) are built    */
-/*  on exact pixel geometry. Reflowing them on mobile breaks the       */
-/*  circuit; scaling preserves the EXACT desktop structure on every    */
-/*  device — spines, elbows, arrows, and current pulses included.     */
+/*  Used ONLY for the geometry-critical pipeline sections (Portfolio,  */
+/*  Method, FAQ) whose fixed-pixel circuit layout must stay identical  */
+/*  on every device. Flow-friendly sections reflow natively instead.   */
 /*                                                                     */
-/*  Implementation: transform:scale on a fixed-width inner div, with   */
-/*  the outer div's height synced to (inner height × scale) via        */
-/*  ResizeObserver — so document flow stays correct even when the      */
-/*  content height changes (e.g. FAQ accordions expanding).            */
+/*  `minScale` sets a readability floor: the frame never shrinks       */
+/*  below it — on very narrow phones the content crops symmetrically   */
+/*  at the edges instead of becoming microscopic.                      */
+/*                                                                     */
+/*  Height is synced to (inner height × scale) via ResizeObserver so   */
+/*  document flow stays correct even when content height changes       */
+/*  (e.g. FAQ accordions expanding).                                   */
 /* ------------------------------------------------------------------ */
 
 export const ScaleFrame = ({
   designWidth,
+  minScale = 0,
   children,
   className = '',
 }: {
   designWidth: number;
+  minScale?: number;
   children: React.ReactNode;
   className?: string;
 }) => {
@@ -28,15 +32,20 @@ export const ScaleFrame = ({
   const innerRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(1);
   const [height, setHeight] = useState<number | undefined>(undefined);
+  const [cropping, setCropping] = useState(false);
 
   useLayoutEffect(() => {
     const measure = () => {
       const outer = outerRef.current;
       const inner = innerRef.current;
       if (!outer || !inner) return;
-      const s = Math.min(1, outer.clientWidth / designWidth);
+      const fit = outer.clientWidth / designWidth;
+      const s = Math.max(minScale, Math.min(1, fit));
       setScale(s);
       setHeight(inner.offsetHeight * s);
+      /* only clip when the minScale floor forces actual cropping —
+         otherwise let glows/shadows bleed past the frame naturally */
+      setCropping(fit < minScale);
     };
     measure();
     const ro = new ResizeObserver(measure);
@@ -47,20 +56,29 @@ export const ScaleFrame = ({
       ro.disconnect();
       window.removeEventListener('resize', measure);
     };
-  }, [designWidth]);
+  }, [designWidth, minScale]);
 
   return (
     <div
       ref={outerRef}
       className={className}
-      style={{ height, maxWidth: designWidth, marginLeft: 'auto', marginRight: 'auto' }}
+      style={{
+        height,
+        maxWidth: designWidth,
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        display: 'flex',
+        justifyContent: 'center',
+        overflow: cropping ? 'hidden' : 'visible',
+      }}
     >
       <div
         ref={innerRef}
         style={{
           width: designWidth,
+          flexShrink: 0,
           transform: `scale(${scale})`,
-          transformOrigin: 'top left',
+          transformOrigin: 'top center',
         }}
       >
         {children}

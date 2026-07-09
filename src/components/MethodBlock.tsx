@@ -51,7 +51,7 @@ export const MethodBlock = () => {
         whileInView={{ scaleY: 1 }}
         viewport={{ once: true }}
         transition={{ duration: 1.2, ease: customEase }}
-        className="absolute left-1/2 -translate-x-1/2 top-0 h-[88px] w-[3.5px] z-0 origin-top"
+        className="absolute left-1/2 -translate-x-1/2 top-0 h-[104px] w-[3.5px] z-0 origin-top"
         style={{ background: GREEN, boxShadow: `0 0 12px ${GREEN}50` }}
       />
 
@@ -71,7 +71,7 @@ export const MethodBlock = () => {
         </div>
 
         {/* --- ALTERNATING PIPELINE MATRIX GRID (same structure on all devices) --- */}
-        <ScaleFrame designWidth={768} className="w-full">
+        <ScaleFrame designWidth={768} minScale={0.5} className="w-full">
         <div className="flex flex-col relative w-full space-y-16 pt-8 pb-32">
 
           {/* ========================================== */}

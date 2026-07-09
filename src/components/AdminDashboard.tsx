@@ -54,22 +54,24 @@ export const AdminDashboard = () => {
   // FETCH CORE ENGINE DATA
   useEffect(() => {
     if (isAuthenticated) {
-      // 1. Fetch Leads via Vercel index routing
-      fetch('/api/admin/leads', { 
+      // Dynamically fallback to an empty string if deployed monolithically, or use your backend environment URL variable
+      const API_BASE = import.meta.env.VITE_API_BASE_URL || '';
+  
+      // 1. Fetch Leads via backend route
+      fetch(`${API_BASE}/api/admin/leads`, { 
         headers: { 'Authorization': `Bearer ${import.meta.env.VITE_ADMIN_KEY}` } 
       })
       .then(res => res.json())
       .then(data => { if (Array.isArray(data)) setLeads(data); })
-      .catch(err => console.error(err));
-
-      // 2. Fetch Projects via Vercel index routing
-      fetch('/api/projects')
-        .then(res => res.json())
-        .then(data => { if (Array.isArray(data)) setProjects(data); })
-        .catch(err => console.error("Vault_Sync_Failure:", err));
+      .catch(err => console.error("Leads_Sync_Failure:", err));
+  
+      // 2. Fetch Projects via backend route
+      fetch(`${API_BASE}/api/projects`, { cache: 'no-cache' }) // ⚡ ADDED CACHE CONTROL HERE
+      .then(res => res.json())
+      .then(data => { if (Array.isArray(data)) setProjects(data); })
+      .catch(err => console.error("Vault_Sync_Failure:", err));
     }
   }, [isAuthenticated]);
-
   // HANDLE CREATE OR UPDATE REQUESTS
   const handleProjectSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -90,12 +92,13 @@ export const AdminDashboard = () => {
       
       if (response.ok) {
         alert(editingProjectId ? "VAULT_MODIFICATION: Core project values updated." : "VAULT_DEPLOYMENT: New asset live.");
-        // Clean form status and refresh project table layout
+        
         setProjectForm({ title: '', image_url: '', tech_stack: '', live_link: '', description: '' });
         setEditingProjectId(null);
         
         // Securely re-align endpoint to route through index on hot reload
-        const res = await fetch('/api/projects');
+        const API_BASE = import.meta.env.VITE_API_BASE_URL || '';
+        const res = await fetch(`${API_BASE}/api/projects`, { cache: 'no-cache' }); // ⚡ UPDATED HERE TOO
         const data = await res.json();
         if (Array.isArray(data)) setProjects(data);
       }

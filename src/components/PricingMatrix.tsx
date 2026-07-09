@@ -91,11 +91,16 @@ export const PricingMatrix = () => {
   return (
     <section id="pricing" className="bg-black relative text-center font-sans select-none overflow-hidden pb-0">
 
-      {/* Mobile spine (hidden on desktop) */}
-      <div
-        className="absolute left-1/2 -translate-x-1/2 top-0 bottom-0 w-[3px] lg:hidden z-0 opacity-50"
-        style={{ background: GREEN }}
-      />
+      {/* Mobile spine (hidden on desktop) — full-strength root link with
+          glow + current pulse; cards are opaque so it reads as the
+          circuit passing BETWEEN them, not through them */}
+      <div className="absolute left-1/2 -translate-x-1/2 top-0 bottom-0 w-[3.5px] lg:hidden z-0 overflow-hidden">
+        <div
+          className="absolute inset-0"
+          style={{ background: GREEN, boxShadow: '0 0 10px rgba(74,222,128,0.35)' }}
+        />
+        <span aria-hidden className="pm-pulse-mobile" />
+      </div>
 
       <div className="max-w-[936px] mx-auto relative px-6 lg:px-0">
 
@@ -134,9 +139,15 @@ export const PricingMatrix = () => {
           </div>
         </div>
 
-        {/* Mobile Title (hidden on desktop) */}
-        <div className="relative lg:hidden bg-black px-6 py-12 z-20 inline-block mx-auto">
-          <h2 className="text-[22px] font-bold tracking-[0.15em] text-white uppercase whitespace-nowrap">
+        {/* Mobile Title (hidden on desktop) — eyebrow + title on the spine */}
+        <div className="relative lg:hidden text-center py-12 z-20">
+          <span
+            className="inline-block bg-black px-4 text-[11px] font-bold tracking-[0.3em] uppercase mb-2"
+            style={{ color: GREEN }}
+          >
+            ✦ Plans
+          </span>
+          <h2 className="mx-auto inline-block bg-black px-5 text-[22px] font-bold tracking-[0.15em] text-white uppercase whitespace-nowrap block w-fit">
             YOUR INVESTMENT
           </h2>
         </div>
@@ -155,19 +166,32 @@ export const PricingMatrix = () => {
                 delay: 0.45 + (plan.isPopular ? 0.3 : idx * 0.12),
                 ease: customEase,
               }}
-              className={`pm-card group w-[280px] shrink-0 rounded-2xl py-10 px-8 flex flex-col items-center border text-center relative mx-auto lg:mx-0 ${
-                plan.isPopular ? 'pm-card-popular z-30' : 'z-20'
+              className={`pm-card group w-full max-w-[400px] lg:w-[280px] shrink-0 rounded-2xl py-8 lg:py-10 px-6 lg:px-8 flex flex-col items-center border text-center relative mx-auto lg:mx-0 ${
+                plan.isPopular ? 'pm-card-popular z-30 max-lg:order-first' : 'z-20'
               }`}
               style={
                 plan.isPopular
                   ? {
-                      background: 'rgba(74,222,128,0.08)',
+                      /* solid tint (not rgba over transparent) so the
+                         mobile spine can't show through the card */
+                      background: '#0c1d13',
                       borderColor: GREEN,
                       boxShadow: '0 0 40px rgba(74,222,128,0.12)',
                     }
                   : { background: '#08080a', borderColor: '#27272a' }
               }
             >
+              {/* MOST POPULAR tag — explains why the flagship leads the
+                  stack on mobile; sits on the top border on all devices */}
+              {plan.isPopular && (
+                <span
+                  className="absolute -top-[11px] left-1/2 -translate-x-1/2 px-3 py-[3px] rounded-full text-[10px] font-bold tracking-[0.18em] uppercase text-black whitespace-nowrap"
+                  style={{ background: GREEN, boxShadow: '0 0 14px rgba(74,222,128,0.4)' }}
+                >
+                  Most Popular
+                </span>
+              )}
+
               {/* Star Node for popular card — spins in after the card lands */}
               {plan.isPopular && (
                 <motion.span
@@ -331,8 +355,28 @@ export const PricingMatrix = () => {
           92%, 100% { left: 140%; }
         }
 
+        /* ⚡ mobile spine current pulse */
+        .pm-pulse-mobile {
+          position: absolute;
+          left: 0; right: 0; top: 0;
+          height: 28px;
+          border-radius: 2px;
+          background: linear-gradient(180deg, transparent, #d1ffe3, transparent);
+          transform: translateY(-32px);
+          animation: pm-pulse-mobile-run 5s cubic-bezier(0.6, 0, 0.4, 1) infinite;
+          animation-delay: 2s;
+        }
+        @keyframes pm-pulse-mobile-run {
+          0% { transform: translateY(-32px); opacity: 0; }
+          6% { opacity: 1; }
+          80%, 100% { transform: translateY(1600px); opacity: 1; }
+        }
+        @media (min-width: 1024px) {
+          .pm-pulse-mobile { display: none; }
+        }
+
         @media (prefers-reduced-motion: reduce) {
-          .pm-btn-shine { animation: none; }
+          .pm-btn-shine, .pm-pulse-mobile { animation: none; }
         }
       `}</style>
     </section>

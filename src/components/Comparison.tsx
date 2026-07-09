@@ -111,28 +111,28 @@ export const Comparison = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-80px' }}
           transition={{ duration: 0.8, delay: 0.25, ease: customEase }}
-          className="relative z-20 w-full overflow-x-auto hide-scrollbar rounded-2xl border border-zinc-800 bg-[#050506] shadow-[0_30px_80px_rgba(0,0,0,0.6)]"
+          className="relative z-20 w-full rounded-2xl border border-zinc-800 bg-[#050506] shadow-[0_30px_80px_rgba(0,0,0,0.6)] overflow-hidden"
         >
-          <div className="min-w-[640px]">
+          <div>
 
             {/* Header Row */}
             <div className="grid grid-cols-[1.2fr_1fr_1fr] border-b border-zinc-800">
-              <div className="p-6" /> {/* Empty top-left cell */}
+              <div className="p-3 sm:p-6" /> {/* Empty top-left cell */}
 
               <motion.div
                 initial={{ opacity: 0 }}
                 whileInView={{ opacity: 1 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: 0.5 }}
-                className="p-6 flex items-center justify-center text-center border-l border-zinc-800/50"
+                className="p-3 sm:p-6 flex items-center justify-center text-center border-l border-zinc-800/50"
               >
-                <span className="text-[12px] font-bold tracking-[0.15em] text-zinc-400 uppercase">
+                <span className="text-[10px] sm:text-[12px] font-bold tracking-[0.1em] sm:tracking-[0.15em] text-zinc-400 uppercase leading-snug">
                   Freelancers / Big Agencies
                 </span>
               </motion.div>
 
               <div
-                className="p-6 flex items-center justify-center text-center relative"
+                className="p-3 sm:p-6 flex items-center justify-center text-center relative"
                 style={{ background: 'rgba(74,222,128,0.06)', borderLeft: `1px solid ${GREEN}4D` }}
               >
                 {/* Glowing top accent — energizes left→right like a power rail */}
@@ -149,7 +149,7 @@ export const Comparison = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: 0.6, ease: customEase }}
-                  className="text-[13px] font-black tracking-[0.15em] text-white uppercase flex items-center gap-2"
+                  className="text-[11px] sm:text-[13px] font-black tracking-[0.1em] sm:tracking-[0.15em] text-white uppercase flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 leading-snug"
                 >
                   Lux <span style={{ color: GREEN }}>&</span> Taurus
                   <motion.span
@@ -182,25 +182,25 @@ export const Comparison = () => {
                     }`}
                   >
                     {/* Feature Name */}
-                    <div className="p-5 md:p-6 flex items-center">
-                      <span className="text-[13px] font-bold tracking-[0.15em] text-white uppercase">
+                    <div className="min-w-0 p-3 sm:p-5 md:p-6 flex items-center">
+                      <span className="text-[10px] sm:text-[13px] font-bold tracking-[0.08em] sm:tracking-[0.15em] text-white uppercase leading-snug break-words">
                         {row.feature}
                       </span>
                     </div>
 
                     {/* Alternatives Column */}
-                    <div className="p-5 md:p-6 flex items-center justify-center text-center border-l border-zinc-800/50">
-                      <span className="text-[15px] font-medium text-zinc-400">
+                    <div className="min-w-0 p-3 sm:p-5 md:p-6 flex items-center justify-center text-center border-l border-zinc-800/50">
+                      <span className="text-[12px] sm:text-[15px] font-medium text-zinc-400 leading-snug break-words">
                         {typeof row.alt === 'function' ? row.alt(rowDelay + 0.25) : row.alt}
                       </span>
                     </div>
 
                     {/* Lux & Taurus Column */}
                     <div
-                      className="cmp-us p-5 md:p-6 flex items-center justify-center text-center relative"
+                      className="cmp-us min-w-0 p-3 sm:p-5 md:p-6 flex items-center justify-center text-center relative"
                       style={{ background: 'rgba(74,222,128,0.03)', borderLeft: `1px solid ${GREEN}4D` }}
                     >
-                      <span className={`text-[16px] font-bold ${typeof row.us === 'string' ? 'text-white' : ''}`}>
+                      <span className={`text-[13px] sm:text-[16px] font-bold leading-snug break-words ${typeof row.us === 'string' ? 'text-white' : ''}`}>
                         {typeof row.us === 'function' ? row.us(rowDelay + 0.25) : row.us}
                       </span>
                     </div>

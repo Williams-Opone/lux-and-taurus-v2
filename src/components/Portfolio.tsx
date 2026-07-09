@@ -335,10 +335,10 @@ export const Portfolio = () => {
   return (
     <section
       id="vault"
-      className="bg-black relative overflow-hidden text-left font-sans select-none pb-24 lg:pb-40"
+      className="bg-black relative overflow-hidden text-left font-sans select-none pb-0"
     >
       <div className="px-3 sm:px-6">
-        <ScaleFrame designWidth={976} className="relative">
+        <ScaleFrame designWidth={976} minScale={0.38} className="relative">
 
           {/* ============================================================ */}
           {/* STATS HUD                                                     */}
@@ -453,11 +453,11 @@ export const Portfolio = () => {
                   )}
 
                   {isLast && isEven && (
-                    <div className="absolute left-[190px] top-full w-[320px] h-[170px] pointer-events-none z-10">
-                      <svg className="w-full h-full drop-shadow-[0_0_8px_rgba(74,222,128,0.3)]" viewBox="0 0 320 170" fill="none" style={{ color: GREEN }}>
+                    <div className="absolute left-[190px] top-full w-[320px] h-[260px] pointer-events-none z-10">
+                      <svg className="w-full h-full drop-shadow-[0_0_8px_rgba(74,222,128,0.3)]" viewBox="0 0 320 260" fill="none" style={{ color: GREEN }}>
                         <Pipeline
-                          d="M 10 0 V 45 Q 10 100 65 100 H 245 Q 298 100 298 150 V 170"
-                          pulseDur={3.4}
+                          d="M 10 0 V 45 Q 10 100 65 100 H 245 Q 298 100 298 150 V 260"
+                          pulseDur={4}
                           pulseBegin="1.8s"
                         />
                       </svg>
@@ -465,11 +465,11 @@ export const Portfolio = () => {
                   )}
 
                   {isLast && !isEven && (
-                    <div className="absolute right-[190px] top-full w-[320px] h-[170px] pointer-events-none z-10">
-                      <svg className="w-full h-full drop-shadow-[0_0_8px_rgba(74,222,128,0.3)]" viewBox="0 0 320 170" fill="none" style={{ color: GREEN }}>
+                    <div className="absolute right-[190px] top-full w-[320px] h-[260px] pointer-events-none z-10">
+                      <svg className="w-full h-full drop-shadow-[0_0_8px_rgba(74,222,128,0.3)]" viewBox="0 0 320 260" fill="none" style={{ color: GREEN }}>
                         <Pipeline
-                          d="M 310 0 V 45 Q 310 100 255 100 H 75 Q 22 100 22 150 V 170"
-                          pulseDur={3.4}
+                          d="M 310 0 V 45 Q 310 100 255 100 H 75 Q 22 100 22 150 V 260"
+                          pulseDur={4}
                           pulseBegin="1.8s"
                         />
                       </svg>
@@ -497,6 +497,15 @@ export const Portfolio = () => {
               );
             })}
           </div>
+
+          {/* Spacer = the closing connector's tail zone. The connector is
+              absolutely positioned below the last row, so without this it
+              wouldn't count in the frame's measured height — it was being
+              clipped by the frame and left a dead unscaled gap before the
+              Method spine on phones. Now the tail lives INSIDE the frame,
+              scales with it, and ends flush at the section boundary where
+              MethodBlock's top spine begins. */}
+          <div className="h-[260px]" aria-hidden />
         </ScaleFrame>
       </div>
 
@@ -524,3 +533,4 @@ export const Portfolio = () => {
     </section>
   );
 };
+

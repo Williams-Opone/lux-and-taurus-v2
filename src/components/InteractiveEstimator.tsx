@@ -73,6 +73,22 @@ const DrawnCheck = () => (
   </svg>
 );
 
+/* -------- sticky mobile price bar visibility hook -------- */
+const useInViewport = () => {
+  const ref = useRef<HTMLDivElement>(null);
+  const [inView, setInView] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const io = new IntersectionObserver(([e]) => setInView(e.isIntersecting), {
+      threshold: 0.05,
+    });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+  return { ref, inView };
+};
+
 export const InteractiveEstimator = () => {
   const [building, setBuilding] = useState('Web application');
   const [features, setFeatures] = useState<string[]>([
@@ -148,6 +164,15 @@ export const InteractiveEstimator = () => {
 
   const plan = getEstimate();
 
+  /* sticky mobile bar shows while the QUESTIONS are on screen but the
+     estimate card is NOT — i.e. exactly when price feedback is invisible */
+  const questions = useInViewport();
+  const estimateCard = useInViewport();
+  const showBar = questions.inView && !estimateCard.inView;
+
+  const jumpToEstimate = () =>
+    estimateCard.ref.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
   return (
     <section id="estimator" className="bg-black relative text-left font-sans select-none overflow-hidden pb-24">
       {/* Top Spine — plugs into the Pricing conduit above (root link),
@@ -201,7 +226,7 @@ export const InteractiveEstimator = () => {
         >
 
           {/* Left Column: Inputs */}
-          <div className="w-full md:w-[55%] border-b md:border-b-0 md:border-r border-zinc-800 flex flex-col">
+          <div ref={questions.ref} className="w-full md:w-[55%] border-b md:border-b-0 md:border-r border-zinc-800 flex flex-col">
 
             {/* 1. What are you building? */}
             <motion.div
@@ -336,6 +361,7 @@ export const InteractiveEstimator = () => {
 
             {/* Glowing Estimate Card — wears the orbiting energy beam */}
             <div
+              ref={estimateCard.ref}
               className="est-card flex-grow rounded-2xl p-8 relative flex flex-col items-center"
               style={{
                 border: `1px solid ${GREEN}`,
@@ -437,6 +463,54 @@ export const InteractiveEstimator = () => {
           </motion.div>
 
         </motion.div>
+      </div>
+
+      {/* 📱 STICKY LIVE PRICE BAR — mobile only. Appears while the
+          questions are on screen but the estimate card isn't, so every
+          tap gives instant price feedback without leaving the form. */}
+      <div
+        className="md:hidden fixed bottom-0 inset-x-0 z-40 px-3 pb-3 transition-all duration-300"
+        style={{
+          transform: showBar ? 'translateY(0)' : 'translateY(120%)',
+          opacity: showBar ? 1 : 0,
+          pointerEvents: showBar ? 'auto' : 'none',
+        }}
+      >
+        <button
+          onClick={jumpToEstimate}
+          className="w-full bg-transparent border-0 p-0 cursor-pointer text-left"
+          aria-label="View your full estimate"
+        >
+          <div
+            className="rounded-2xl border bg-black/90 backdrop-blur-md px-5 py-3.5 flex items-center justify-between gap-3 shadow-[0_-10px_40px_rgba(0,0,0,0.6)]"
+            style={{
+              borderColor: 'rgba(74,222,128,0.5)',
+              boxShadow: '0 -10px 40px rgba(0,0,0,0.6), 0 0 24px rgba(74,222,128,0.12)',
+            }}
+          >
+            <div className="min-w-0">
+              <motion.span
+                key={plan.name}
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+                className="block text-[13px] font-bold text-white truncate"
+              >
+                {plan.name}
+                <span className="text-zinc-400 font-medium"> · {plan.duration.toLowerCase()}</span>
+              </motion.span>
+              <span className="block text-[11px] font-semibold" style={{ color: GREEN }}>
+                View estimate ↓
+              </span>
+            </div>
+            <span
+              className="text-[24px] font-black tracking-tight tabular-nums shrink-0"
+              style={{ color: GREEN }}
+            >
+              <PriceTicker value={plan.price} />
+            </span>
+          </div>
+        </button>
       </div>
 
       {/* component-scoped animation engine (transform-only) */}

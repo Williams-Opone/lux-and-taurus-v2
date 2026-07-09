@@ -118,33 +118,34 @@ export const BookCall = () => {
         initial={{ opacity: 0, y: -12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: customEase }}
-        className="relative z-30 max-w-[936px] mx-auto px-6 lg:px-0 pt-6 flex items-center justify-between"
+        className="relative z-30 max-w-[936px] mx-auto px-4 sm:px-6 lg:px-0 pt-5 sm:pt-6 flex items-center justify-between gap-3"
       >
         <button
           onClick={goHome}
-          className="relative bg-transparent border-0 p-0 cursor-pointer flex items-center gap-2.5 select-none group/logo"
+          className="relative bg-transparent border-0 p-0 cursor-pointer flex items-center gap-2 sm:gap-2.5 select-none group/logo min-w-0"
         >
           {/* breathing glow behind the mark — same as the navbar */}
           <span aria-hidden className="bk-logo-glow" />
           {/* same image treatment as the general navbar */}
           <img
-            src="../landtnoblogo.png"
+            src="/landtnoblogo.png"
             alt="Lux & Taurus Logo"
-            className="w-[30px] h-[35px] shrink-0 object-contain relative z-10 mix-blend-screen transition-transform duration-300 group-hover/logo:scale-110"
+            className="w-[26px] h-[30px] sm:w-[30px] sm:h-[35px] shrink-0 object-contain relative z-10 mix-blend-screen transition-transform duration-300 group-hover/logo:scale-110"
           />
-          <span className="relative z-10 text-white font-extrabold text-[18px] tracking-tight whitespace-nowrap">
+          <span className="relative z-10 text-white font-extrabold text-[15px] sm:text-[18px] tracking-tight whitespace-nowrap">
             LUX <span style={{ color: GREEN }}>&amp;</span> TAURUS
           </span>
         </button>
         <button
           onClick={goHome}
-          className="bg-transparent border-0 p-0 cursor-pointer inline-flex items-center gap-2 text-[13.5px] font-semibold tracking-[0.04em] transition-colors duration-200 hover:text-white"
+          className="bg-transparent border-0 p-0 cursor-pointer inline-flex items-center gap-1.5 sm:gap-2 text-[13px] sm:text-[13.5px] font-semibold tracking-[0.04em] transition-colors duration-200 hover:text-white shrink-0"
           style={{ color: GREEN }}
         >
           <svg className="w-[14px] h-[14px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.75">
             <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
           </svg>
-          <span>Back to site</span>
+          <span className="hidden min-[420px]:inline">Back to site</span>
+          <span className="min-[420px]:hidden">Back</span>
         </button>
       </motion.header>
 
@@ -160,9 +161,9 @@ export const BookCall = () => {
         <span aria-hidden className="bk-pulse" />
       </div>
 
-      <div className="max-w-[936px] mx-auto relative px-6 lg:px-0 pt-[110px]">
+      <div className="max-w-[936px] mx-auto relative px-4 sm:px-6 lg:px-0 pt-[84px] sm:pt-[110px]">
         {/* header */}
-        <div className="text-center mb-12 relative z-20">
+        <div className="text-center mb-8 sm:mb-12 relative z-20">
           <motion.span
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -179,7 +180,7 @@ export const BookCall = () => {
               whileInView={{ y: 0, opacity: 1, filter: 'blur(0px)' }}
               viewport={{ once: true }}
               transition={{ duration: 1, delay: 0.15, ease: customEase }}
-              className="text-[32px] md:text-[42px] font-bold text-white tracking-tight uppercase leading-none"
+              className="text-[26px] sm:text-[32px] md:text-[42px] font-bold text-white tracking-tight uppercase leading-tight sm:leading-none"
             >
               Book Your Free Call
             </motion.h2>
@@ -189,7 +190,7 @@ export const BookCall = () => {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.7, delay: 0.4 }}
-            className="text-zinc-400 text-[16px] mt-4"
+            className="text-zinc-400 text-[14.5px] sm:text-[16px] mt-3 sm:mt-4 px-2"
           >
             Free · 30 minutes · No commitment. Just bring your idea.
           </motion.p>
@@ -204,7 +205,7 @@ export const BookCall = () => {
           className="w-full bg-[#08080a] border border-zinc-800 rounded-2xl flex flex-col md:flex-row relative z-20 shadow-[0_30px_80px_rgba(0,0,0,0.6)] overflow-hidden"
         >
           {/* LEFT — intake form / success state */}
-          <div className="w-full md:w-[58%] border-b md:border-b-0 md:border-r border-zinc-800 p-8 sm:p-10">
+          <div className="w-full md:w-[58%] border-b md:border-b-0 md:border-r border-zinc-800 p-5 sm:p-8 md:p-10">
             {status === 'success' ? (
               /* ---------- success ---------- */
               <motion.div
@@ -332,7 +333,7 @@ export const BookCall = () => {
                   <label className="block text-[12px] font-bold tracking-[0.12em] text-zinc-400 uppercase mb-2">
                     Which package fits?
                   </label>
-                  <div className="grid grid-cols-2 gap-2.5">
+                  <div className="grid grid-cols-1 min-[420px]:grid-cols-2 gap-2.5">
                     {PROJECT_TYPES.map((t) => (
                       <button
                         key={t}
@@ -392,7 +393,7 @@ export const BookCall = () => {
           </div>
 
           {/* RIGHT — what happens next */}
-          <div className="w-full md:w-[42%] p-8 sm:p-10 bg-[#050506] flex flex-col">
+          <div className="w-full md:w-[42%] p-5 sm:p-8 md:p-10 bg-[#050506] flex flex-col">
             <h3 className="text-[14px] font-bold tracking-[0.15em] text-white uppercase mb-7">
               What happens next
             </h3>
