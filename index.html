@@ -2,21 +2,31 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
+    <link rel="icon" href="/favicon.ico" />
+
+    <!-- Fixed 1024px layout on ALL devices: identical desktop structure
+         everywhere. Phones additionally get the .boost class (set below),
+         which enlarges reading text + thickens the root link WITHOUT
+         changing the layout structure. -->
     <meta name="viewport" content="width=1024" />
-    
+    <script>
+      (function () {
+        /* portrait width classifies the DEVICE (phone stays phone in
+           landscape). Runs before first paint — no flash. */
+        if (Math.min(screen.width, screen.height) < 768) {
+          document.documentElement.classList.add('boost');
+        }
+      })();
+    </script>
+
     <title>14-Day MVP Development Studio | Lux & Taurus</title>
-
-<!-- Ensure your meta description has the exact string -->
-    <meta name="description" content="Get your production-ready 14-day MVP built by Lux & Taurus. We compress 10-week corporate lifecycles into a 14-day MVP engineering sprint with zero technical debt." />
-
-<!-- Inject it into your Open Graph Title for social validation -->
-    <meta property="og:title" content="14-Day MVP Development Studio | Lux & Taurus" />
-    <meta name="description" content="We ship production-ready startup MVPs in 14 days. A boutique development studio in Lagos trusted by US and UK founders to compress 10-week builds into two weeks with enterprise-grade quality." />
+    <meta
+      name="description"
+      content="We ship production-ready startup MVPs in 14 days. A boutique development studio in Lagos trusted by US and UK founders to compress 10-week builds into two weeks with enterprise-grade quality."
+    />
     <meta name="keywords" content="MVP development, startup software engineering, Lagos dev studio, software developer freelancer, hire development agency" />
     <meta name="robots" content="index, follow" />
     <link rel="canonical" href="https://luxandtaurus.com/" />
-
     <meta name="theme-color" content="#0A0A0F" />
 
     <meta property="og:type" content="website" />

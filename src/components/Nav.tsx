@@ -27,9 +27,52 @@ type NavProps = {
   logoBlend?: boolean;
 };
 
+/* device-class detection — the site uses a fixed 1024px viewport, so
+   CSS breakpoints always resolve as desktop. Physical screen dims are
+   the signal instead.
+   A LAPTOP/DESKTOP has a long edge ≥1280px (1366×768, 1440×900,
+   1920×1080…). Phones and standard tablets don't (iPad Pro 12.9" is
+   1024×1366 — long edge 1366 — so we additionally require the SHORT
+   edge to clear 800, which no tablet's portrait width does while
+   every laptop's height does... except 1366×768, caught by the long
+   edge being paired with a short edge ≥768 AND a fine pointer). The
+   robust, simple discriminator: hover-capable fine pointer = desktop. */
+const isCompactDevice = () => {
+  if (typeof navigator === 'undefined') return false;
+
+  /* USER-AGENT detection — deliberately, after capability queries
+     proved unreliable across test environments. UA works identically
+     in devtools emulation (the emulator swaps the UA string with the
+     preset, no reload-timing quirks) and on real devices.
+     · phones: "iPhone", "Android … Mobile"
+     · tablets: "iPad", "Android" (without Mobile), "Tablet"
+     · iPadOS 13+ masquerades as "Macintosh" — caught via touch points
+     · desktops (Windows/Mac/Linux): no match → full nav */
+  const ua = navigator.userAgent;
+  const mobileUA = /iPhone|iPod|iPad|Android|Mobile|Tablet|Silk/i.test(ua);
+  const iPadOS = /Macintosh/.test(ua) && (navigator.maxTouchPoints ?? 0) > 1;
+  return mobileUA || iPadOS;
+};
+
 export const Nav = ({ logoSrc = '/landtnoblogo.png', logoBlend = true }: NavProps) => {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+
+  /* REACTIVE device check — recomputed on resize/orientation events.
+     Previously computed once at mount, so toggling the devtools
+     emulator (or rotating) left the nav stuck on the load-time
+     verdict until a manual reload. Emulator toggles fire resize. */
+  const [compact, setCompact] = useState(isCompactDevice);
+  useEffect(() => {
+    const recheck = () => setCompact(isCompactDevice());
+    recheck();
+    window.addEventListener('resize', recheck);
+    window.addEventListener('orientationchange', recheck);
+    return () => {
+      window.removeEventListener('resize', recheck);
+      window.removeEventListener('orientationchange', recheck);
+    };
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -90,7 +133,8 @@ export const Nav = ({ logoSrc = '/landtnoblogo.png', logoBlend = true }: NavProp
 
         {/* LINKS + CTA */}
         <div className="flex items-center gap-2.5 sm:gap-8">
-          <div className="hidden sm:flex items-center gap-7">
+          {!compact && (
+          <div className="flex items-center gap-7">
             {NAV_LINKS.map((link, i) => (
               <motion.button
                 key={link.id}
@@ -108,6 +152,7 @@ export const Nav = ({ logoSrc = '/landtnoblogo.png', logoBlend = true }: NavProp
               </motion.button>
             ))}
           </div>
+          )}
 
           {/* CALL pill — glow + shimmer sweep, never a solid fill */}
           <motion.button
@@ -133,54 +178,60 @@ export const Nav = ({ logoSrc = '/landtnoblogo.png', logoBlend = true }: NavProp
             <span className="relative z-10">]</span>
           </motion.button>
 
-          {/* ☰ hamburger — mobile only, morphs into ✕ when open */}
-          <button
-            onClick={() => setMenuOpen((v) => !v)}
-            aria-label={menuOpen ? 'Close menu' : 'Open menu'}
-            aria-expanded={menuOpen}
-            className="sm:hidden relative bg-transparent border-0 p-1.5 -mr-1 cursor-pointer flex flex-col justify-center items-center gap-[5px] w-[34px] h-[34px]"
-          >
-            <span
-              className="block w-[18px] h-[2px] rounded-full bg-white transition-transform duration-300"
-              style={{ transform: menuOpen ? 'translateY(7px) rotate(45deg)' : 'none' }}
-            />
-            <span
-              className="block w-[18px] h-[2px] rounded-full bg-white transition-opacity duration-300"
-              style={{ opacity: menuOpen ? 0 : 1 }}
-            />
-            <span
-              className="block w-[18px] h-[2px] rounded-full bg-white transition-transform duration-300"
-              style={{ transform: menuOpen ? 'translateY(-7px) rotate(-45deg)' : 'none' }}
-            />
-          </button>
+          {/* ☰ hamburger — phones & tablets (device-detected, not CSS).
+              Sized generously: the page displays scaled-down on these
+              devices, so a big button lands as a normal tap target. */}
+          {compact && (
+            <button
+              onClick={() => setMenuOpen((v) => !v)}
+              aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+              aria-expanded={menuOpen}
+              className="relative bg-transparent border-0 p-2 -mr-1 cursor-pointer flex flex-col justify-center items-center gap-[7px] w-[52px] h-[52px]"
+            >
+              <span
+                className="block w-[30px] h-[3px] rounded-full bg-white transition-transform duration-300"
+                style={{ transform: menuOpen ? 'translateY(10px) rotate(45deg)' : 'none' }}
+              />
+              <span
+                className="block w-[30px] h-[3px] rounded-full bg-white transition-opacity duration-300"
+                style={{ opacity: menuOpen ? 0 : 1 }}
+              />
+              <span
+                className="block w-[30px] h-[3px] rounded-full bg-white transition-transform duration-300"
+                style={{ transform: menuOpen ? 'translateY(-10px) rotate(-45deg)' : 'none' }}
+              />
+            </button>
+          )}
         </div>
       </nav>
 
-      {/* 📱 mobile dropdown menu — same shell language as the bar */}
-      <div
-        className="sm:hidden mx-auto max-w-[1040px] overflow-hidden transition-[grid-template-rows] duration-300 ease-out grid"
-        style={{ gridTemplateRows: menuOpen ? '1fr' : '0fr' }}
-      >
-        <div className="overflow-hidden">
-          <div
-            className="mt-2 rounded-2xl border border-zinc-800 bg-black/90 backdrop-blur-md shadow-[0_10px_40px_rgba(0,0,0,0.6)] px-5 py-3"
-            style={{ boxShadow: 'inset 0 0 0 1px rgba(74,222,128,0.08)' }}
-          >
-            {NAV_LINKS.map((link, i) => (
-              <button
-                key={link.id}
-                onClick={() => jumpToSection(link.id)}
-                className={`w-full bg-transparent border-0 px-0 py-3.5 cursor-pointer flex items-center justify-between text-left text-[15px] font-semibold tracking-[0.03em] text-white active:text-[#4ade80] ${
-                  i < NAV_LINKS.length - 1 ? 'border-b border-zinc-800/70' : ''
-                }`}
-              >
-                <span>{link.label}</span>
-                <span style={{ color: GREEN }}>→</span>
-              </button>
-            ))}
+      {/* 📱 dropdown menu — same shell language as the bar */}
+      {compact && (
+        <div
+          className="mx-auto max-w-[1040px] overflow-hidden transition-[grid-template-rows] duration-300 ease-out grid"
+          style={{ gridTemplateRows: menuOpen ? '1fr' : '0fr' }}
+        >
+          <div className="overflow-hidden">
+            <div
+              className="mt-2 rounded-2xl border border-zinc-800 bg-black/90 backdrop-blur-md shadow-[0_10px_40px_rgba(0,0,0,0.6)] px-7 py-4"
+              style={{ boxShadow: 'inset 0 0 0 1px rgba(74,222,128,0.08)' }}
+            >
+              {NAV_LINKS.map((link, i) => (
+                <button
+                  key={link.id}
+                  onClick={() => jumpToSection(link.id)}
+                  className={`w-full bg-transparent border-0 px-0 py-5 cursor-pointer flex items-center justify-between text-left text-[24px] font-semibold tracking-[0.03em] text-white active:text-[#4ade80] ${
+                    i < NAV_LINKS.length - 1 ? 'border-b border-zinc-800/70' : ''
+                  }`}
+                >
+                  <span>{link.label}</span>
+                  <span style={{ color: GREEN }}>→</span>
+                </button>
+              ))}
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* component-scoped animation engine */}
       <style>{`

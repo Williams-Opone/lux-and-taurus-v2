@@ -145,3 +145,64 @@ body {
   scrollbar-width: thin;
   scrollbar-color: var(--color-accent-dark) var(--color-bg);
 }
+
+/* ==================================================================
+   📖 LEGIBILITY BOOST — phones only (html.boost, set in index.html)
+
+   The site renders the identical 1024px desktop structure on every
+   device. On phones that displays at ~0.38×, which is hard on
+   older eyes. These rules enlarge the READING text and thicken the
+   root-link circuit WITHOUT changing the layout structure — text
+   wraps a little more inside its same boxes; grids, pipelines, and
+   positions are untouched.
+
+   Specificity note: `.boost [class*=…]` = (0,2,0), which beats any
+   single Tailwind utility (0,1,0) — no !important needed.
+================================================================== */
+
+/* ---- body / reading text: small sizes lifted to ~20px ---- */
+.boost [class*="text-[14"],
+.boost [class*="text-[15"],
+.boost [class*="text-[16"],
+.boost [class*="text-[17"] {
+  font-size: 20px;
+  line-height: 1.55;
+}
+
+/* ---- captions, labels, eyebrows: lifted to a readable floor ---- */
+.boost [class*="text-[10"],
+.boost [class*="text-[11"],
+.boost [class*="text-[12"],
+.boost [class*="text-[13"] {
+  font-size: 15px;
+}
+
+/* ---- secondary headings (18-22px range) get a gentle lift ---- */
+.boost [class*="text-[18"],
+.boost [class*="text-[19"],
+.boost [class*="text-[20"],
+.boost [class*="text-[21"],
+.boost [class*="text-[22"] {
+  font-size: 24px;
+}
+
+/* ---- muted grays step toward white for contrast (low-vision aid) ---- */
+.boost .text-zinc-500 { color: #a1a1aa; } /* zinc-400 */
+.boost .text-zinc-400 { color: #d4d4d8; } /* zinc-300 */
+.boost .text-muted    { color: #d4d4d8; }
+
+/* ---- the root link: thickened, same glow, same centering ---- */
+.boost [class*="w-[3.5px]"] { width: 6px; }
+.boost [class*="w-[3px]"]   { width: 6px; }
+.boost .pipeline-spine-axis { width: 6px; }
+/* horizontal HUD branches */
+.boost [class*="h-[2.5px]"] { height: 4px; }
+/* node dots grow to match the thicker line */
+.boost [class*="w-[9px]"][class*="h-[9px]"]   { width: 13px; height: 13px; }
+.boost [class*="w-[13px]"][class*="h-[13px]"] { width: 17px; height: 17px; }
+.boost .pipeline-node { width: 16px; height: 16px; }
+
+/* ---- pipeline SVG strokes (Portfolio / Method / Pricing conduits) ---- */
+.boost :is(#vault, #process, #pricing, #proof) svg path[stroke] {
+  stroke-width: 6px;
+}

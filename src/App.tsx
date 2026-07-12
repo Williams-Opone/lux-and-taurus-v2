@@ -27,12 +27,35 @@ import {
    (png / jpg / webp / ...) and update the filename below if it differs. */
 import logoImg from './assets/landtnoblogo.png';
 
+/* On PHONES, utility pages (booking form, admin, legal) switch to a
+   native device-width viewport so their sm:/md: responsive layouts
+   engage — forms must be typeable, not a scaled-down desktop page.
+   The main site keeps the fixed 1024px blueprint viewport. Tablets
+   keep 1024 everywhere (0.75× is comfortable). */
+const isPhone = () =>
+  typeof screen !== 'undefined' && Math.min(screen.width, screen.height) < 768;
+
+const applyViewportFor = (hash: string) => {
+  const meta = document.querySelector('meta[name="viewport"]');
+  if (!meta) return;
+  const utilityPage =
+    isBookRoute(hash) || isAdminRoute(hash) || isPrivacyRoute(hash) || isTermsRoute(hash);
+  meta.setAttribute(
+    'content',
+    isPhone() && utilityPage ? 'width=device-width, initial-scale=1.0' : 'width=1024'
+  );
+};
+
 export default function App() {
   const [route, setRoute] = useState(window.location.hash);
 
   useEffect(() => {
+    /* covers direct landings on #/book etc. (the index.html inline
+       script can't know the route; this corrects it on mount) */
+    applyViewportFor(window.location.hash);
     const onHash = () => {
       setRoute(window.location.hash);
+      applyViewportFor(window.location.hash);
       window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
     };
     window.addEventListener('hashchange', onHash);
@@ -54,6 +77,7 @@ export default function App() {
     return (
       <main className="min-h-screen bg-black">
         <AdminDashboard />
+        
       </main>
     );
   }

@@ -368,7 +368,7 @@ export const BookCall = () => {
 
                 {status === 'error' && (
                   <p className="text-[13px] font-semibold text-red-400/90">
-                    Something broke on our end — try again, or email hello@luxandtaurus.com directly.
+                    Something broke on our end — try again, or email c@luxandtaurus.com directly.
                   </p>
                 )}
 

@@ -58,12 +58,12 @@ export const BaseFooter = () => (
         {/* RIGHT — contact + legal */}
         <div className="space-y-3 sm:text-right">
           <div className="flex items-center justify-center sm:justify-end gap-3.5">
-            <a
-              href="mailto:hello@luxandtaurus.com"
-              className="text-[15px] text-zinc-100 no-underline transition-colors hover:text-[#4ade80]"
-            >
-              hello@luxandtaurus.com
-            </a>
+          <a
+  href="mailto:contact@luxandtaurus.com?subject=Inquiry%20from%20Website&body=Hi%20Lux%20%26%20Taurus%2C%20"
+  className="text-[15px] text-zinc-100 no-underline transition-colors hover:text-[#4ade80]"
+>
+  contact@luxandtaurus.com
+</a>
             {/* Twitter / X */}
             <a
               href="#"

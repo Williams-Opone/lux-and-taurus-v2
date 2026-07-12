@@ -465,6 +465,20 @@ export const InteractiveEstimator = () => {
         </motion.div>
       </div>
 
+      {/* Bottom outlet spine — fills the section's padding gap so the
+          root link physically touches the Comparison inlet below */}
+      <div className="absolute left-1/2 -translate-x-1/2 bottom-0 h-[96px] w-[3.5px] z-10 overflow-hidden">
+        <motion.div
+          className="absolute inset-0 origin-top"
+          style={{ background: GREEN, boxShadow: `0 0 10px ${GREEN}50` }}
+          initial={{ scaleY: 0 }}
+          whileInView={{ scaleY: 1 }}
+          viewport={{ once: true, margin: '-40px' }}
+          transition={{ duration: 0.7, delay: 0.2, ease: customEase }}
+        />
+        <span aria-hidden className="est-pulse-out" />
+      </div>
+
       {/* 📱 STICKY LIVE PRICE BAR — mobile only. Appears while the
           questions are on screen but the estimate card isn't, so every
           tap gives instant price feedback without leaving the form. */}
@@ -538,6 +552,23 @@ export const InteractiveEstimator = () => {
           60%, 100% { transform: translateY(104px); opacity: 1; }
         }
 
+        /* outlet current — hands off into the Comparison inlet below */
+        .est-pulse-out {
+          position: absolute;
+          left: 0; right: 0; top: 0;
+          height: 24px;
+          border-radius: 2px;
+          background: linear-gradient(180deg, transparent, #d1ffe3, transparent);
+          transform: translateY(-28px);
+          animation: est-pulse-out-run 3.6s cubic-bezier(0.6, 0, 0.4, 1) infinite;
+          animation-delay: 3.2s;
+        }
+        @keyframes est-pulse-out-run {
+          0% { transform: translateY(-28px); opacity: 0; }
+          10% { opacity: 1; }
+          60%, 100% { transform: translateY(110px); opacity: 1; }
+        }
+
         /* 🛰️ orbiting beam on the estimate card — same masked conic
            technique as the nav, slower + dimmer (supporting role) */
         .est-beam {
@@ -598,7 +629,7 @@ export const InteractiveEstimator = () => {
         }
 
         @media (prefers-reduced-motion: reduce) {
-          .est-pulse, .est-beam, .est-btn-shine { animation: none !important; }
+          .est-pulse, .est-pulse-out, .est-beam, .est-btn-shine { animation: none !important; }
         }
       `}</style>
     </section>
