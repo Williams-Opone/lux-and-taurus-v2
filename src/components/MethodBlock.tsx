@@ -70,8 +70,9 @@ export const MethodBlock = () => {
           </motion.h2>
         </div>
 
-        {/* --- ALTERNATING PIPELINE MATRIX GRID (same structure on all devices) --- */}
-        <ScaleFrame designWidth={768} minScale={0.5} className="w-full">
+        {/* --- DESKTOP: alternating pipeline timeline (lg+) --- */}
+        <div className="hidden lg:block w-full">
+        <ScaleFrame designWidth={768} className="w-full">
         <div className="flex flex-col relative w-full space-y-16 pt-8 pb-32">
 
           {/* ========================================== */}
@@ -142,8 +143,9 @@ export const MethodBlock = () => {
 
             <motion.div initial={{ scale: 0 }} whileInView={{ scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.5, ease: customEase }} className="absolute left-1/2 -translate-x-1/2 top-[14px] w-[14px] h-[14px] rounded-full z-30" style={{ background: GREEN, boxShadow: `0 0 12px ${GREEN}80` }} />
 
-            {/* Final spine extending all the way down to feed into Pricing */}
-            <motion.div initial={{ scaleY: 0 }} whileInView={{ scaleY: 1 }} viewport={{ once: true }} transition={{ duration: 1.5, delay: 0.6, ease: customEase }} className="absolute left-1/2 -translate-x-1/2 top-[28px] bottom-[-160px] w-[3.5px] z-10 origin-top" style={{ background: GREEN }} />
+            {/* Final spine — runs to the section boundary, where DailyProof's
+                inlet spine takes over (handoff re-checked for the new section) */}
+            <motion.div initial={{ scaleY: 0 }} whileInView={{ scaleY: 1 }} viewport={{ once: true }} transition={{ duration: 1.5, delay: 0.6, ease: customEase }} className="absolute left-1/2 -translate-x-1/2 top-[28px] bottom-[-128px] w-[3.5px] z-10 origin-top" style={{ background: GREEN }} />
 
             <div className="text-right pr-12 opacity-0 pointer-events-none select-none">Spacer</div>
 
@@ -168,6 +170,42 @@ export const MethodBlock = () => {
         </div>
 
         </ScaleFrame>
+        </div>
+
+        {/* --- MOBILE/TABLET: centered native timeline (<lg) —
+            same text sizes + 3.5px root link as the rest of the site --- */}
+        <div className="lg:hidden relative w-full max-w-md mx-auto pt-6 pb-4">
+          <div
+            className="absolute left-1/2 -translate-x-1/2 top-0 bottom-0 w-[3.5px]"
+            style={{ background: GREEN, boxShadow: '0 0 10px rgba(74,222,128,0.35)' }}
+          />
+          <div className="relative z-10 space-y-10">
+            {steps.map((step, idx) => (
+              <motion.div
+                key={step.id}
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-40px' }}
+                transition={{ duration: 0.6, delay: idx * 0.12, ease: customEase }}
+                className="text-center"
+              >
+                <div
+                  className="w-[14px] h-[14px] rounded-full mx-auto mb-3"
+                  style={{ background: GREEN, boxShadow: `0 0 12px ${GREEN}80` }}
+                />
+                <div className="inline-block bg-black px-5">
+                  <h3 className="text-[22px] font-extrabold text-white tracking-wide">
+                    <span className="font-mono text-[15px] mr-2" style={{ color: GREEN }}>{step.id}</span>
+                    {step.t}
+                  </h3>
+                  <p className="text-zinc-400 text-[15px] font-medium leading-relaxed whitespace-pre-line mt-1.5">
+                    {step.d}
+                  </p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
 
       </div>
     </section>

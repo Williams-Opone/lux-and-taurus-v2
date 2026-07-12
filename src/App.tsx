@@ -3,6 +3,7 @@ import { Nav } from './components/Nav';
 import { Hero } from './components/Hero';
 import { Portfolio } from './components/Portfolio';
 import { MethodBlock } from './components/MethodBlock';
+import { DailyProof } from './components/DailyProof';
 import { PricingMatrix } from './components/PricingMatrix';
 import { Estimator } from './components/InteractiveEstimator';
 import { Comparison } from './components/Comparison';
@@ -103,6 +104,7 @@ export default function App() {
       <Hero />
       <Portfolio />
       <MethodBlock />
+      <DailyProof />
       <PricingMatrix />
       <Estimator />
       <Comparison />

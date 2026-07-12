@@ -523,6 +523,7 @@ def get_projects():
         response.headers['Cache-Control'] = 'public, max-age=600, s-maxage=3600'
         return response, 200
     except Exception as e:
+        print(f"!!! PROJECTS FETCH ERROR: {str(e)}")   # ← add this
         return jsonify({"status": "error", "message": "Failed to stream assets."}), 500
 
 @app.route("/api/admin/projects", methods=["POST"])

@@ -338,7 +338,9 @@ export const Portfolio = () => {
       className="bg-black relative overflow-hidden text-left font-sans select-none pb-0"
     >
       <div className="px-3 sm:px-6">
-        <ScaleFrame designWidth={976} minScale={0.38} className="relative">
+        {/* ============ DESKTOP: pipeline blueprint (lg+) ============ */}
+        <div className="hidden lg:block">
+        <ScaleFrame designWidth={976} className="relative">
 
           {/* ============================================================ */}
           {/* STATS HUD                                                     */}
@@ -507,6 +509,48 @@ export const Portfolio = () => {
               MethodBlock's top spine begins. */}
           <div className="h-[260px]" aria-hidden />
         </ScaleFrame>
+        </div>
+
+        {/* ============ MOBILE/TABLET: native layout (<lg) ============
+            Same text sizes and 3.5px root link as every other section —
+            full size consistency through the whole page. */}
+        <div className="lg:hidden max-w-md mx-auto px-1">
+          {/* stats */}
+          <div className="grid grid-cols-2 gap-x-6 gap-y-5 pt-2 pb-10">
+            {['12 day average', '47+ builds', '$2.1M+ raised by clients', '98% on-time'].map((s) => (
+              <div key={s} className="flex items-start gap-2.5">
+                <span
+                  className="w-2 h-2 rounded-full mt-2 shrink-0"
+                  style={{ background: GREEN, boxShadow: `0 0 6px ${GREEN}` }}
+                />
+                <span className="text-[19px] font-bold text-white tracking-tight leading-snug">{s}</span>
+              </div>
+            ))}
+          </div>
+
+          {/* spine → title */}
+          <div className="mx-auto w-[3.5px] h-14" style={{ background: GREEN, boxShadow: '0 0 10px rgba(74,222,128,0.35)' }} />
+          <div className="text-center py-6">
+            <span className="text-[#4ade80] text-[11px] font-bold tracking-[0.25em] uppercase block mb-2">Our Portfolio</span>
+            <h2 className="text-[26px] font-bold text-white tracking-tight uppercase leading-none">Selected Projects</h2>
+          </div>
+
+          {/* stacked projects, root link running between them */}
+          {projects.map((c, i) => (
+            <div key={c.id}>
+              {i > 0 && (
+                <div className="mx-auto w-[3.5px] h-16" style={{ background: GREEN, boxShadow: '0 0 10px rgba(74,222,128,0.35)' }} />
+              )}
+              <div className="py-4 space-y-6">
+                <BrowserCard img={c.img} title={c.title} url={c.url} from="left" />
+                <CaseCopy c={c} from="left" />
+              </div>
+            </div>
+          ))}
+
+          {/* tail → Method */}
+          <div className="mx-auto w-[3.5px] h-20" style={{ background: GREEN, boxShadow: '0 0 10px rgba(74,222,128,0.35)' }} />
+        </div>
       </div>
 
       <style>{`
@@ -533,4 +577,3 @@ export const Portfolio = () => {
     </section>
   );
 };
-

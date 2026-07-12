@@ -69,7 +69,8 @@ export const Faq = () => {
     <section id="faq" className="bg-black relative overflow-hidden font-sans select-none">
       <div className="px-3 sm:px-6">
         <div className="relative mx-auto w-full max-w-[880px] pb-20 lg:pb-28">
-          {/* ========== same structure on every device (scaled) ========== */}
+          {/* ========== DESKTOP: spine + branches blueprint (lg+) ========== */}
+          <div className="hidden lg:block">
           <ScaleFrame designWidth={880}>
           <div className="relative pt-2">
             {/* continuous center spine — self-draws, then carries current */}
@@ -233,6 +234,78 @@ export const Faq = () => {
           </div>
 
           </ScaleFrame>
+          </div>
+
+          {/* ========== MOBILE/TABLET: native accordion (<lg) —
+              same text sizes + 3.5px root link as the rest ========== */}
+          <div className="lg:hidden pt-2 pb-4">
+            {/* inlet spine */}
+            <div className="mx-auto w-[3.5px] h-14 mb-10" style={{ background: GREEN, boxShadow: '0 0 10px rgba(74,222,128,0.35)' }} />
+
+            {/* quotes */}
+            <div className="space-y-8 mb-12">
+              {FAQS.filter((f) => f.quote).map((f, qi) => (
+                <motion.div
+                  key={f.quote!.author}
+                  className="flex gap-4"
+                  initial={{ opacity: 0, x: -16 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true, margin: '-40px' }}
+                  transition={{ duration: 0.55, delay: qi * 0.15, ease: customEase }}
+                >
+                  <span className="w-[3px] rounded-full shrink-0" style={{ background: GREEN, boxShadow: `0 0 6px ${GREEN}` }} />
+                  <div>
+                    <p className="text-[20px] font-bold text-white tracking-tight leading-snug">{f.quote!.text.join(' ')}</p>
+                    <p className="text-[14px] text-zinc-400 mt-1">— {f.quote!.author}</p>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+
+            {/* accordion */}
+            <div className="border-t border-zinc-800/80">
+              {FAQS.map((item, i) => (
+                <motion.div
+                  key={item.q}
+                  className="border-b border-zinc-800/80"
+                  initial={{ opacity: 0, y: 14 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: '-40px' }}
+                  transition={{ duration: 0.5, delay: i * 0.07, ease: customEase }}
+                >
+                  <button
+                    type="button"
+                    onClick={() => setOpen(open === i ? null : i)}
+                    className="w-full bg-transparent border-0 p-0 py-5 cursor-pointer flex items-center justify-between gap-4 text-left"
+                    aria-expanded={open === i}
+                  >
+                    <span className="text-[17px] font-bold tracking-tight transition-colors duration-300" style={{ color: open === i ? GREEN : '#ffffff' }}>
+                      {item.q}
+                    </span>
+                    <svg
+                      className="w-[17px] h-[17px] shrink-0 transition-transform duration-300"
+                      style={{ stroke: GREEN, transform: open === i ? 'rotate(45deg)' : 'rotate(0deg)' }}
+                      viewBox="0 0 24 24" fill="none" strokeWidth="2.5"
+                    >
+                      <path strokeLinecap="round" d="M12 4v16M4 12h16" />
+                    </svg>
+                  </button>
+                  <div className="grid transition-[grid-template-rows] duration-300 ease-out" style={{ gridTemplateRows: open === i ? '1fr' : '0fr' }}>
+                    <div className="overflow-hidden">
+                      <p className="text-[15px] text-zinc-400 leading-relaxed pb-5">{item.a}</p>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+
+            {/* outlet spine + terminal radar dot */}
+            <div className="mx-auto w-[3.5px] h-14 mt-10" style={{ background: GREEN, boxShadow: '0 0 10px rgba(74,222,128,0.35)' }} />
+            <div className="relative mx-auto mt-0 w-[26px] h-[26px] rounded-full" style={{ background: GREEN, boxShadow: '0 0 18px rgba(74,222,128,0.6)' }}>
+              <span aria-hidden className="faq-ring" />
+              <span aria-hidden className="faq-ring faq-ring-2" />
+            </div>
+          </div>
         </div>
       </div>
 
